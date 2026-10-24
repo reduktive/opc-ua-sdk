@@ -1,0 +1,12 @@
+=== server/alarms ===
+Raise an alarm that persists until somebody acknowledges it.
+
+  1. Created the server
+  2. Published Boiler/Temperature and a Heat Method
+  3. Attached a HighTemperature alarm, threshold 90
+  4. Listening, one Basic256Sha256 SignAndEncrypt endpoint
+     opc.tcp://127.0.0.1:<port>
+     Run example_client_alarms in another terminal. Press Ctrl+C to stop.
+  5. Stopped on Ctrl+C
+
+OK  server/alarms

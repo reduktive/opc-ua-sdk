@@ -1,0 +1,181 @@
+#include <gtest/gtest.h>
+#include "ua_data_type_registration.h"
+#include "ua_structure.h"
+#include "ua_structure_factory.h"
+#include "ua_binary_codec.h"
+#include "ua_xml_codec.h"
+#include "ua_memory_stream.h"
+#include "ua_node_id.h"
+#include "ua_xml_parser.h"
+
+#include "ua_null_stream.h"
+
+PLACEHOLDER_INCLUDES
+
+using namespace ua;
+
+class GeneratedDataTypeTests : public ::testing::Test
+{
+protected:
+  void SetUp() override
+  {
+    register_ua_data_types_with_factory(nsConfig, &uaBinaryFactory, &xmlFactory);
+  }
+
+  NamespaceIndexResolver getNamespaceIndex = [](string_view uri) -> uint16_t
+  {
+    if (uri == "http://opcfoundation.org/UA/")
+    {
+      return 0;
+    }
+
+    // Deliberately map non-UA namespaces to a non-trivial index to prove that generated code
+    // does not assume `ns=0`.
+    return 7;
+  };
+
+  CodecNamespaceContext nsConfig{getNamespaceIndex};
+  StructureFactory uaBinaryFactory;
+  StructureFactory xmlFactory;
+  NullStream nullStream;
+
+  template<typename T>
+  void test_binary_round_trip(const T& val1)
+  {
+    memory_stream_device::Dynamic device;
+    MemoryStream stream(device);
+    EncodingLimits encodingLimits{100, 100};
+    auto limit = encodingLimits.stack_depth();
+    UaBinaryEncoder binaryEncoder(nsConfig, stream);
+    Encoder encoder(binaryEncoder);
+    val1.encode(limit, encoder);
+
+    stream.seek_from_start(0);
+    UaBinaryDecoder binaryDecoder(uaBinaryFactory.resolver(), stream, encodingLimits, nsConfig);
+    Decoder decoder(binaryDecoder);
+    T val2;
+    val2.decode(limit, decoder);
+    EXPECT_EQ(val1, val2);
+  }
+
+  template<typename T>
+  void test_metadata(const T& val)
+  {
+    EXPECT_FALSE(val.type_name().empty());
+    EXPECT_FALSE(val.type_id(nsConfig).is_null());
+    EXPECT_FALSE(val.type_id().is_null());
+    EXPECT_TRUE(val.is_of_type(nsConfig, NodeId{getNamespaceIndex(T::typeNamespaceUri), T::typeId}));
+    EXPECT_EQ(
+      val.type_id(nsConfig).namespace_index(), getNamespaceIndex(string_view{val.type_id().namespace_uri()}));
+    EXPECT_EQ(val.built_in_type_id(), BuiltInTypeId::ExtensionObject);
+  }
+
+  template<typename T>
+  void test_clone(const T& val)
+  {
+    auto cloned = val.clone();
+    ASSERT_NE(cloned, nullptr);
+    auto casted = dynamic_cast<T*>(cloned.get());
+    ASSERT_NE(casted, nullptr);
+    EXPECT_EQ(val, *casted);
+  }
+
+  template<typename T>
+  void test_xml_round_trip(const T& val1)
+  {
+    memory_stream_device::Dynamic device;
+    MemoryStream stream(device);
+    EncodingLimits encodingLimits{100, 100};
+    auto limit = encodingLimits.stack_depth();
+    XmlEncoder xmlEncoder(nsConfig, stream);
+    xmlEncoder.encode(limit, "Value", val1);
+
+    auto data = device.get_data();
+    std::string xmlString(reinterpret_cast<const char*>(data.data()), data.size());
+    // std::cout << "Encoded XML: " << xmlString << std::endl;
+    xmlString.push_back('\0');
+
+    auto xmlContext = xml::parse(xmlString.data());
+    auto xmlElement = xmlContext.xml_element();
+    auto firstChild = xmlElement.get_first_child("Value");
+    ASSERT_TRUE(firstChild.has_value());
+
+    XmlDecoder xmlDecoder(xmlFactory, firstChild.value(), encodingLimits);
+    T val2;
+    xmlDecoder.decode(limit, "", false, val2);
+    // EXPECT_EQ(val1, val2);
+    if (!(val1 == val2))
+    {
+      std::cout << "Inequality detected in XML round trip!" << std::endl;
+      memory_stream_device::Dynamic device2;
+      MemoryStream stream2(device2);
+      XmlEncoder xmlEncoder2(nsConfig, stream2);
+      xmlEncoder2.encode(limit, "Value", val2);
+      auto data2 = device2.get_data();
+      std::string xmlString2(reinterpret_cast<const char*>(data2.data()), data2.size());
+      std::cout << "Original XML: ";
+      for (auto c : xmlString)
+        if (c == '\0')
+          std::cout << "\\0";
+        else
+          std::cout << c;
+      std::cout << std::endl;
+      std::cout << "Round-trip XML: ";
+      for (auto c : xmlString2)
+        if (c == '\0')
+          std::cout << "\\0";
+        else
+          std::cout << c;
+      std::cout << std::endl;
+      EXPECT_EQ(val1, val2);
+    }
+  }
+
+  // Round-trips the value through the polymorphic `Structure*` encode path - the
+  // form a structure takes on the wire inside an ExtensionObject. Unlike
+  // test_binary_round_trip (which calls encode()/decode() directly on the
+  // concrete type and so only writes the body), this drives encode_id() on the
+  // encode side and, on the decode side, the StructureFactory create() method
+  // registered for the type's binary encoding id - i.e. the real
+  // serialise-as-ExtensionObject / resolve-by-id path. The decoded value must
+  // equal the original.
+  template<typename T>
+  void test_extension_object_round_trip(const T& val1)
+  {
+    memory_stream_device::Dynamic device;
+    MemoryStream stream(device);
+    EncodingLimits encodingLimits{100, 100};
+    auto limit = encodingLimits.stack_depth();
+    UaBinaryEncoder binaryEncoder(nsConfig, stream);
+    const Structure* base = &val1;
+    binaryEncoder.encode(limit, base);
+
+    stream.seek_from_start(0);
+    UaBinaryDecoder binaryDecoder(uaBinaryFactory.resolver(), stream, encodingLimits, nsConfig);
+    unique_ptr<Structure> decoded;
+    binaryDecoder.decode(limit, decoded);
+    ASSERT_NE(decoded, nullptr);
+    auto* casted = dynamic_cast<T*>(decoded.get());
+    ASSERT_NE(casted, nullptr);
+    EXPECT_EQ(val1, *casted);
+  }
+
+  // Exercises the type's to_string()/append_fields() formatter on a populated
+  // value, recursing through nested structures, arrays and optionals. Both
+  // layouts are real paths: indent == 0 is the inline form; indent > 0 is the
+  // padded multi-line form a parent uses when formatting a nested value (a
+  // separate branch of both to_string() and append_fields()). Asserts the
+  // formatter runs and emits non-empty, structured output for each.
+  template<typename T>
+  void test_to_string(const T& val)
+  {
+    const std::string inlineStr = val.to_string();
+    EXPECT_FALSE(inlineStr.empty());
+    EXPECT_NE(inlineStr.find('{'), std::string::npos);
+    const std::string indentedStr = val.to_string(2);
+    EXPECT_FALSE(indentedStr.empty());
+    EXPECT_NE(indentedStr.find('{'), std::string::npos);
+  }
+};
+
+PLACEHOLDER_TEST_CASES

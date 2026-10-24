@@ -1,0 +1,13 @@
+=== client/discovery ===
+Ask an address what it is and how it will talk to you.
+
+  1. Client ready, asking opc.tcp://127.0.0.1:<port>
+  2. FindServers returned 1 application(s)
+     OPC UA SDK Server [urn:reduktive:opcua-sdk:example:server]
+  3. GetEndpoints returned 1 endpoint(s)
+     [securityLevel 55] Basic256Sha256 SignAndEncrypt, accepts Anonymous, UserName, Certificate
+  4. Chose the highest securityLevel offered: [securityLevel 55] Basic256Sha256 SignAndEncrypt, accepts Anonymous, UserName, Certificate
+     Connect on exactly those terms, or let easy_connect make the same choice.
+  5. Stopped the client; no Session was ever opened
+
+OK  client/discovery

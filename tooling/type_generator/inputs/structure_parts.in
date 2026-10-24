@@ -1,0 +1,156 @@
+PLACEHOLDER_CREATE_BEGIN
+namespace detail::PLACEHOLDER_CLASS_NAME
+{
+namespace
+{
+unique_ptr<Structure> create()
+{
+  return make_unique<PLACEHOLDER_QUALIFIED_CLASS_NAME>();
+}
+}  // namespace
+}
+PLACEHOLDER_CREATE_END
+
+PLACEHOLDER_CLONE_DEFINITION_BEGIN
+unique_ptr<Structure> PLACEHOLDER_CLASS_NAME::clone() const
+{
+  return make_unique<PLACEHOLDER_CLASS_NAME>(*this);
+}
+PLACEHOLDER_CLONE_DEFINITION_END
+
+PLACEHOLDER_CLONE_DECLARATION_BEGIN
+  /// Polymorphically deep-copies this value.
+  /// @return A heap-allocated copy held by its `Structure` base.
+  unique_ptr<Structure> clone() const override;
+PLACEHOLDER_CLONE_DECLARATION_END
+
+PLACEHOLDER_ENCODING_DETAILS_BEGIN
+namespace detail::PLACEHOLDER_CLASS_NAME
+{
+namespace
+{
+void encode(StackDepth limit, const PLACEHOLDER_QUALIFIED_CLASS_NAME& value, UaBinaryEncoder& encoder)
+{
+PLACEHOLDER_ENCODE_BIN_CONTENTS
+}
+
+void encode(StackDepth limit, const PLACEHOLDER_QUALIFIED_CLASS_NAME& value, XmlEncoder& encoder)
+{
+PLACEHOLDER_ENCODE_XML_CONTENTS
+}
+
+void decode(StackDepth limit, UaBinaryDecoder& decoder, PLACEHOLDER_QUALIFIED_CLASS_NAME& value)
+{
+PLACEHOLDER_DECODE_BIN_CONTENTS
+}
+
+void decode(StackDepth limit, XmlDecoder& decoder, PLACEHOLDER_QUALIFIED_CLASS_NAME& value)
+{
+PLACEHOLDER_DECODE_XML_CONTENTS
+}
+}  // namespace
+}
+PLACEHOLDER_ENCODING_DETAILS_END
+
+PLACEHOLDER_ENCODE_ID_DETAILS_BEGIN
+namespace detail::PLACEHOLDER_CLASS_NAME
+{
+namespace
+{
+void encode_id(StackDepth limit, const CodecNamespaceContext& ns, UaBinaryEncoder& encoder)
+{
+PLACEHOLDER_ENCODE_ID_BIN_BODY
+}
+
+void encode_id(StackDepth limit, const CodecNamespaceContext& ns, XmlEncoder& encoder)
+{
+PLACEHOLDER_ENCODE_ID_XML_BODY
+}
+}  // namespace
+}
+PLACEHOLDER_ENCODE_ID_DETAILS_END
+
+PLACEHOLDER_ENCODE_BODY_BEGIN
+PLACEHOLDER_BASE_CLASS_NAME::encode(limit, encoder);
+
+if (auto uaBinary = encoder.get_ua_binary())
+{
+  detail::PLACEHOLDER_CLASS_NAME::encode(limit, *this, *uaBinary);
+}
+else if (auto xml = encoder.get_xml())
+{
+  detail::PLACEHOLDER_CLASS_NAME::encode(limit, *this, *xml);
+}
+PLACEHOLDER_ENCODE_BODY_END
+
+PLACEHOLDER_ENCODE_EMPTY_BODY_BEGIN
+PLACEHOLDER_BASE_CLASS_NAME::encode(limit, encoder);
+PLACEHOLDER_ENCODE_EMPTY_BODY_END
+
+PLACEHOLDER_ENCODE_ID_BODY_BEGIN
+if (auto uaBinary = encoder.get_ua_binary())
+{
+  detail::PLACEHOLDER_CLASS_NAME::encode_id(limit, ns, *uaBinary);
+}
+else if (auto xml = encoder.get_xml())
+{
+  detail::PLACEHOLDER_CLASS_NAME::encode_id(limit, ns, *xml);
+}
+PLACEHOLDER_ENCODE_ID_BODY_END
+
+PLACEHOLDER_ENCODE_ID_EMPTY_BODY_BEGIN
+UA_UNUSED(limit);
+UA_UNUSED(ns);
+UA_UNUSED(encoder);
+PLACEHOLDER_ENCODE_ID_EMPTY_BODY_END
+
+PLACEHOLDER_DECODE_BODY_BEGIN
+PLACEHOLDER_BASE_CLASS_NAME::decode(limit, decoder);
+
+if (auto uaBinary = decoder.get_ua_binary())
+{
+  detail::PLACEHOLDER_CLASS_NAME::decode(limit, *uaBinary, *this);
+}
+else if (auto xml = decoder.get_xml())
+{
+  detail::PLACEHOLDER_CLASS_NAME::decode(limit, *xml, *this);
+}
+PLACEHOLDER_DECODE_BODY_END
+
+PLACEHOLDER_DECODE_EMPTY_BODY_BEGIN
+PLACEHOLDER_BASE_CLASS_NAME::decode(limit, decoder);
+PLACEHOLDER_DECODE_EMPTY_BODY_END
+
+PLACEHOLDER_REGISTER_DECLARATION_BEGIN
+  /// Registers this type's decode factories so encoded values can be
+  /// reconstructed by their encoding id.
+  /// @param ns              Namespace context the encoding ids are registered under.
+  /// @param uaBinaryFactory Binary-codec factory to register with, or null to skip.
+  /// @param xmlFactory      XML-codec factory to register with, or null to skip.
+static void register_type(const CodecNamespaceContext& ns,
+  StructureFactory* uaBinaryFactory, StructureFactory* xmlFactory);
+PLACEHOLDER_REGISTER_DECLARATION_END
+
+PLACEHOLDER_REGISTER_DEFINITION_BEGIN
+void PLACEHOLDER_CLASS_NAME::register_type(const CodecNamespaceContext& ns,
+  StructureFactory* uaBinaryFactory, StructureFactory* xmlFactory)
+{
+PLACEHOLDER_REGISTER_NS_UNUSED
+  if (uaBinaryFactory)
+  {
+    uaBinaryFactory->register_type(
+      PLACEHOLDER_REGISTER_BIN_ID, detail::PLACEHOLDER_CLASS_NAME::create);
+  }
+  if (xmlFactory)
+  {
+    xmlFactory->register_type(PLACEHOLDER_REGISTER_XML_ID, detail::PLACEHOLDER_CLASS_NAME::create);
+  }
+}
+PLACEHOLDER_REGISTER_DEFINITION_END
+
+PLACEHOLDER_HEADER_ENCODE_ID_DECLARATIONS_BEGIN
+  /// The Default Binary encoding's `ObjectId`.
+static const ObjectId defaultBinaryEncodingId{ObjectId::PLACEHOLDER_CLASS_NAME_Encoding_DefaultBinary};
+  /// The Default XML encoding's `ObjectId`.
+static const ObjectId defaultXmlEncodingId{ObjectId::PLACEHOLDER_CLASS_NAME_Encoding_DefaultXml};
+PLACEHOLDER_HEADER_ENCODE_ID_DECLARATIONS_END

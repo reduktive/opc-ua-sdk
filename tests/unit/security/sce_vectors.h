@@ -1,0 +1,401 @@
+// SPDX-License-Identifier: LicenseRef-Reduktive-Source-Available-1.0
+// Copyright (c) 2026 Reduktive Limited. All rights reserved.
+
+// GENERATED - do not edit.
+// Independent vectors for the SecureChannelEnhancements policies, computed with Python
+// `cryptography` from the OPC UA 1.05.07 text. See the generator for the sources of each family.
+
+#pragma once
+
+#include <cstdint>
+#include <string_view>
+
+namespace ua::test::sce_vectors
+{
+
+// Part 6 Figure 12 chunks. Sign: the tag covers every byte before it and the payload is empty.
+// SignAndEncrypt: the message and security headers are the associated data and the sequence
+// header and body are the payload. Each IV is the base IV with bytes 0-3 XORed with the TokenId
+// and bytes 4-7 with the sequence number of the previous chunk sent in the same direction.
+namespace chunk
+{
+inline constexpr std::string_view baseIv = "a0a1a2a3a4a5a6a7a8a9aaab";
+inline constexpr uint32_t channelId = 0x01020304U;
+inline constexpr uint32_t tokenId = 0x11223344U;
+inline constexpr uint32_t requestId = 0x00000005U;
+inline constexpr std::string_view body =
+  "303132333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f5051525354555657";
+inline constexpr std::string_view aes128GcmKey = "101112131415161718191a1b1c1d1e1f";
+inline constexpr std::string_view aes128GcmSignChunk =
+  "4d5347465000000004030201443322110800000005000000303132333435363738393a3b3c3d3e3f4041424344454647"
+  "48494a4b4c4d4e4f5051525354555657836d8dd727de9e00728414a85ab51d7c";
+inline constexpr std::string_view iv = "e49280b2a3a5a6a7a8a9aaab";
+inline constexpr std::string_view aes128GcmSignAfterWrapChunk =
+  "4d5347465000000004030201443322110000000005000000303132333435363738393a3b3c3d3e3f4041424344454647"
+  "48494a4b4c4d4e4f505152535455565723ce159bca784c65a6bd5d3fe2dc31c5";
+inline constexpr std::string_view ivAfterWrap = "e49280b25b5a5958a8a9aaab";
+inline constexpr std::string_view aes128GcmSignAndEncryptChunk =
+  "4d534746500000000403020144332211161ddc8086db16aaab0d68163a3147babd0cda843d0ef03296e3a0fdf9383845"
+  "ed5c01999b0c0877b348246a23fa4c02baa8ffd89ab13d8542cc46d99e4125b7";
+inline constexpr std::string_view aes128GcmSignAndEncryptAfterWrapChunk =
+  "4d53474650000000040302014433221121221b78732c51e645e184062cdf763162140223005663e4bf545ecd95db95ab"
+  "f22f4a654a6cad0c043fd9a60dc49ca5cd69b7d8fd4be1c0cf2d6734467dffb3";
+
+inline constexpr std::string_view aes256GcmKey =
+  "505152535455565758595a5b5c5d5e5f606162636465666768696a6b6c6d6e6f";
+inline constexpr std::string_view aes256GcmSignChunk =
+  "4d5347465000000004030201443322110800000005000000303132333435363738393a3b3c3d3e3f4041424344454647"
+  "48494a4b4c4d4e4f5051525354555657c97554e5038d5760502678e2f0c78a2e";
+inline constexpr std::string_view aes256GcmSignAfterWrapChunk =
+  "4d5347465000000004030201443322110000000005000000303132333435363738393a3b3c3d3e3f4041424344454647"
+  "48494a4b4c4d4e4f5051525354555657d4dc11be7c4f9fd2f30dbf4872c7d324";
+inline constexpr std::string_view aes256GcmSignAndEncryptChunk =
+  "4d53474650000000040302014433221116103c8dcfe9bc6db2744201f4d768694947ad990c9262b01cc823f3865ed478"
+  "cca4b921d0b5528e6424afba9bfc9121ab77bbea50f89ead5cbf54ca8cdee617";
+inline constexpr std::string_view aes256GcmSignAndEncryptAfterWrapChunk =
+  "4d5347465000000004030201443322110efd48b513436235e4d97cde7078cec98d2c205a6f759b9ae11d756b3c34d591"
+  "a7b673c5c29ce0ed8acca9ed8e10be673b4f41c65e3564e45d16c9e03b9ddcd2";
+
+inline constexpr std::string_view chaCha20Poly1305Key =
+  "505152535455565758595a5b5c5d5e5f606162636465666768696a6b6c6d6e6f";
+inline constexpr std::string_view chaCha20Poly1305SignChunk =
+  "4d5347465000000004030201443322110800000005000000303132333435363738393a3b3c3d3e3f4041424344454647"
+  "48494a4b4c4d4e4f50515253545556571e1d570cd2cfb1a96e0e2dfa2274aa6c";
+inline constexpr std::string_view chaCha20Poly1305SignAfterWrapChunk =
+  "4d5347465000000004030201443322110000000005000000303132333435363738393a3b3c3d3e3f4041424344454647"
+  "48494a4b4c4d4e4f5051525354555657500b33add861db3e7bd60ecbbf9f3257";
+inline constexpr std::string_view chaCha20Poly1305SignAndEncryptChunk =
+  "4d534746500000000403020144332211fa35f16e6b23baa377f7b09dee3dc569ce8224508fd9bfb02849d284239461d2"
+  "b57b5d960db0a87c0036b6221f61444d1890480a127754d1cc881379ed67083e";
+inline constexpr std::string_view chaCha20Poly1305SignAndEncryptAfterWrapChunk =
+  "4d5347465000000004030201443322113e6dd34c437edc6b5adc4c46cb8513078191710c832ca8ab15d3e66082042d7e"
+  "6dd5f1f5b35115526ed9b6a6442c494d14bf85eb499055b2b8c4091925599db2";
+
+inline constexpr uint32_t lastSequenceNumber = 0x00000007U;
+inline constexpr uint32_t sequenceNumber = 0x00000008U;
+inline constexpr uint32_t lastSequenceNumberAfterWrap = 0xFFFFFFFFU;
+inline constexpr uint32_t sequenceNumberAfterWrap = 0x00000000U;
+inline constexpr std::string_view ownSequenceNumberChaCha20Poly1305SignAndEncryptChunk =
+  "4d5347465000000004030201443322114a1bb1d361b085bd69b4329d2cdb40caab1b529da48a029a702c5cfa5159abe2"
+  "464d49f6341663567afc68f0d6229bc3755cc2cf176c887f61e1b4d07e6ec66b";
+}  // namespace chunk
+
+// Part 6 6.8.1 key derivation with L = EncryptionKeyLength + InitializationVectorLength, the same
+// in Sign and SignAndEncrypt for an AEAD policy. Renewal n uses IKM_n = secret_n XOR IKM_(n-1);
+// the Unchained rows derive renewal keys from secret_n alone and must not match.
+namespace keys
+{
+inline constexpr std::string_view clientNonce =
+  "0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f30"
+  "3132333435363738393a3b3c3d3e3f40";
+inline constexpr std::string_view serverNonce =
+  "8182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9fa0a1a2a3a4a5a6a7a8a9aaabacadaeafb0"
+  "b1b2b3b4b5b6b7b8b9babbbcbdbebfc0";
+inline constexpr std::string_view secret0 =
+  "2122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f50";
+inline constexpr std::string_view secret1 =
+  "6162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f90";
+inline constexpr std::string_view secret2 =
+  "c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadbdcdddedfe0e1e2e3e4e5e6e7e8e9eaebecedeeeff0";
+inline constexpr std::string_view sha256Key16Token0ClientKey = "7f33583520e7d6a9ea738691f2653304";
+inline constexpr std::string_view sha256Key16Token0ClientIv = "45024a8c67c81c3a2c2a62dc";
+inline constexpr std::string_view sha256Key16Token0ServerKey = "028c948bcf76f629b7533dcabfb4f7e2";
+inline constexpr std::string_view sha256Key16Token0ServerIv = "aeee9678562dde53e7009f3f";
+inline constexpr std::string_view sha256Key16Token1ClientKey = "8e98c02379827bac0b67da460250ff8e";
+inline constexpr std::string_view sha256Key16Token1ClientIv = "1afca30bc9a824225e62b775";
+inline constexpr std::string_view sha256Key16Token1ServerKey = "aac3e2c528db9d6473819a9a3abe4ca5";
+inline constexpr std::string_view sha256Key16Token1ServerIv = "65f49e7ffa7e0710d49d8e22";
+inline constexpr std::string_view sha256Key16Token1UnchainedClientKey = "a5256e7f1e00513abf725ba61b7530df";
+inline constexpr std::string_view sha256Key16Token2ClientKey = "05fcf379b283b429945cc4f3f670af29";
+inline constexpr std::string_view sha256Key16Token2ClientIv = "edfe4b5c49bd036dd6df24c5";
+inline constexpr std::string_view sha256Key16Token2ServerKey = "6f2b291ac97a7e8201426c4dc0bffde0";
+inline constexpr std::string_view sha256Key16Token2ServerIv = "3e3b03ae413c124b92e44828";
+inline constexpr std::string_view sha256Key16Token2UnchainedClientKey = "dde64125386582551ff09f5c26445196";
+inline constexpr std::string_view sha256Key32Token0ClientKey =
+  "8cdb3be7f069ce092927d0f8ad356aa45e9ef49f79ddfeabcb8c7d00466a3856";
+inline constexpr std::string_view sha256Key32Token0ClientIv = "1bc5bf4f4a60f79cb6baaa1a";
+inline constexpr std::string_view sha256Key32Token0ServerKey =
+  "dcbd3d27313c50d255d9be359e793ee56a72d36d736e0746dd05ff7d1c397c98";
+inline constexpr std::string_view sha256Key32Token0ServerIv = "06a6a552e4e936f573403bd3";
+inline constexpr std::string_view sha256Key32Token1ClientKey =
+  "06248e4964c21c00a86fcc08bcbdda5571952df204d8b5ae90f7742ef696bd0a";
+inline constexpr std::string_view sha256Key32Token1ClientIv = "ab9879655dea2fe268c85caf";
+inline constexpr std::string_view sha256Key32Token1ServerKey =
+  "d88e416f73966af44f7a0faa42fe0ab4b94dfa15a6728d7558160faaf11da789";
+inline constexpr std::string_view sha256Key32Token1ServerIv = "ec2a08b513eb3671f1ada814";
+inline constexpr std::string_view sha256Key32Token1UnchainedClientKey =
+  "5658ed3d356cc948035fe4a4fa6dc1eba62e6fbc65b59fea3aaeaec5e9c94637";
+inline constexpr std::string_view sha256Key32Token2ClientKey =
+  "0ccd43212b5ce76d8caf568066999568a105f71da516a60eaba1becbb2dd92b6";
+inline constexpr std::string_view sha256Key32Token2ClientIv = "1860eb0488de4a9306657ca5";
+inline constexpr std::string_view sha256Key32Token2ServerKey =
+  "6cca7cbe657b5afed6ce5338c84277447784b8977adee582568e63d44be89607";
+inline constexpr std::string_view sha256Key32Token2ServerIv = "ad71e6e08692af2a8b97e7f2";
+inline constexpr std::string_view sha256Key32Token2UnchainedClientKey =
+  "867289bf823c3af9f581662f6446ba68c340f76c1910672a33a2b404c890da3f";
+inline constexpr std::string_view sha384Key16Token0ClientKey = "f1dc78ced45c82619c6a704253c2d9d2";
+inline constexpr std::string_view sha384Key16Token0ClientIv = "527b44ef7e3fbd11326f5c2f";
+inline constexpr std::string_view sha384Key16Token0ServerKey = "99423f43b8558058cda8aef591f4dad2";
+inline constexpr std::string_view sha384Key16Token0ServerIv = "fc876773b1f957f994086860";
+inline constexpr std::string_view sha384Key16Token1ClientKey = "1ec8afbfe0206b1e8ffb515c192a710d";
+inline constexpr std::string_view sha384Key16Token1ClientIv = "652a7611bde72ba0aa31876d";
+inline constexpr std::string_view sha384Key16Token1ServerKey = "e5beca00dcdb0c02cfe06093e9cd4227";
+inline constexpr std::string_view sha384Key16Token1ServerIv = "735351f1015710fcc112c97a";
+inline constexpr std::string_view sha384Key16Token1UnchainedClientKey = "94dbbef70b4887451fec9636ce06b5b4";
+inline constexpr std::string_view sha384Key16Token2ClientKey = "37619613d2806cc6b87f5964d564ca30";
+inline constexpr std::string_view sha384Key16Token2ClientIv = "8873566c618e15cb1daed36b";
+inline constexpr std::string_view sha384Key16Token2ServerKey = "81a87da1494c868ef717476528a23fe4";
+inline constexpr std::string_view sha384Key16Token2ServerIv = "151f510cd4319d51d4804781";
+inline constexpr std::string_view sha384Key16Token2UnchainedClientKey = "bac9cc097a3075e191aa0f6005d8591c";
+inline constexpr std::string_view sha384Key32Token0ClientKey =
+  "011981c9a3fda88e0af3ee825a4cc7ed758754063a241aa387b3efed94809b57";
+inline constexpr std::string_view sha384Key32Token0ClientIv = "b61d878fc110dfed483f775f";
+inline constexpr std::string_view sha384Key32Token0ServerKey =
+  "e7cf787999dfbe75cc9e10a2518eae6bb39fea102046ae8f1f0b63de11e34900";
+inline constexpr std::string_view sha384Key32Token0ServerIv = "f8a69f8e693c704ec9534e68";
+inline constexpr std::string_view sha384Key32Token1ClientKey =
+  "2044aa431745d136382e0a514ffe88355fd774ab2e89d516da574eb6206c878a";
+inline constexpr std::string_view sha384Key32Token1ClientIv = "34e3377598ae7b18d269f827";
+inline constexpr std::string_view sha384Key32Token1ServerKey =
+  "eb38058c5699007a7deefac7436af8de4ac4485168e8e95fda46b09809f661a4";
+inline constexpr std::string_view sha384Key32Token1ServerIv = "d683b77fddb61e83cdf14f11";
+inline constexpr std::string_view sha384Key32Token1UnchainedClientKey =
+  "9c35472191d2391b70a268ddc030f8aa3fb5d246341ffbfe06cfde887e035b73";
+inline constexpr std::string_view sha384Key32Token2ClientKey =
+  "4d1f38eb2f10a503bffe10e1c4c07915c31067eb8e01451cbc3c04fc6c5883d8";
+inline constexpr std::string_view sha384Key32Token2ClientIv = "ef2df708d15df441b9cf4c61";
+inline constexpr std::string_view sha384Key32Token2ServerKey =
+  "c194d84996cdf0048dc05025273110f0a0b1e9f3e9f2148012dc0bfc1264857e";
+inline constexpr std::string_view sha384Key32Token2ServerIv = "86839bf575ef819753733454";
+inline constexpr std::string_view sha384Key32Token2UnchainedClientKey =
+  "5ab6596978a57a87c10c6488a73872ca8adf8421176ad1d683f4605f8a56391b";
+}  // namespace keys
+
+// RFC 7919 ffdhe3072 with 275-bit private exponents (Part 6 Table 72). Public values and the shared
+// secret are 384-byte zero-padded big-endian. The second peer's exponent is chosen so that the
+// shared secret has a leading zero byte, which exercises the padding.
+namespace ffdhe
+{
+inline constexpr std::string_view prime =
+  "ffffffffffffffffadf85458a2bb4a9aafdc5620273d3cf1d8b9c583ce2d3695a9e13641146433fbcc939dce249b3ef9"
+  "7d2fe363630c75d8f681b202aec4617ad3df1ed5d5fd65612433f51f5f066ed0856365553ded1af3b557135e7f57c935"
+  "984f0c70e0e68b77e2a689daf3efe8721df158a136ade73530acca4f483a797abc0ab182b324fb61d108a94bb2c8e3fb"
+  "b96adab760d7f4681d4f42a3de394df4ae56ede76372bb190b07a7c8ee0a6d709e02fce1cdf7e2ecc03404cd28342f61"
+  "9172fe9ce98583ff8e4f1232eef28183c3fe3b1b4c6fad733bb5fcbc2ec22005c58ef1837d1683b2c6f34a26c1b2effa"
+  "886b4238611fcfdcde355b3b6519035bbc34f4def99c023861b46fc9d6e6c9077ad91d2691f7f7ee598cb0fac186d91c"
+  "aefe130985139270b4130c93bc437944f4fd4452e2d74dd364f2e21e71f54bff5cae82ab9c9df69ee86d2bc522363a0d"
+  "abc521979b0deada1dbf9a42d5c4484e0abcd06bfa53ddef3c1b20ee3fd59d7c25e41d2b66c62e37ffffffffffffffff";
+inline constexpr std::string_view privateA =
+  "06cee8ba01b0ec10c39d76a4c0072c6f115c120718ce6d812056db6b8ba87dab503690";
+inline constexpr std::string_view privateB =
+  "06cff021cebf835282b73ea545cbfc402309376a3c6d0c98a81f2cb253cfa501a34b3a";
+inline constexpr std::string_view publicA =
+  "4e698413ab9c58093f1a81365a47a5665a9ef99c72b3c1b6cbc97edb4f70945f7f1bb2442a33daf6d046ade7f44bbf8b"
+  "ab46464ebef938558454a6d6a5607c7f3f2980f634bdd151c909512602f0ad46818a87011d6b4e7d4d985b6e77c938db"
+  "416e16e8ba5beb078bec9e19aaafe006b030e2c5abeaa4d113f04626d6347ca97e656ea99bc8e1fa7d9c5443ec1aadfd"
+  "6823a447a354027e8865abb1a54583393eead4682bc7ba5e3f24026befb9d2744cb2c7b4818d685df399296aba9bd72a"
+  "be13f8becf82f9581ba22b4a880205e874a1e8fdf781ca95730d5893b0756b0f753acdd13f57b943423984ad2b04f173"
+  "09cb6a9e96735b82edf5fc50c03794eebb1fe74ae742fb1a142f19f27f176281c4876ae0b2982d74dbbd7711ae28acd6"
+  "6cdf55b674c4bda0c483030986262f0d3530cae4d82cec6e38187ac68555ed68f6f40d65ccd7da57a2e32fc518b11e1d"
+  "2db62e3e57546c560a88f3b143fb4f77b843ac6d403a85e0bfdf47f8c8a5bc609fe4506929381a2f1dbd9ffb3f19b8c7";
+inline constexpr std::string_view publicB =
+  "7062c4e5ea1336a5b343fb399f04eb19c39e0b1aeb1d1cd555f23600268c75e2ee50d3dd033a7ef471f8fcde19aae67f"
+  "abf171b22f5d868b71c6268ef361c2f0d64d5b08f4af64f9adf8d9290a8c8f07ec9a03ed9dcab5ced11f04f558a4b76a"
+  "b8a4c3b15fd7c77569f68d9a66605f7a871c83062ca8e9157bd4771a70dfed5a6e9fec8e8bde2bf5c6da3638bd05f64b"
+  "3b77c519649faad0f35caa230fb9f323a105367dec0870919ea180c0ba0b0ae6f43486d91d31dc8dcca37b80cd7f04a8"
+  "6edb905c1b9a9b50d0c440bcb046e4589edefe3ad6a96f82a709b01047a4992f42d2e0a08d8fb91108174b65f1488af3"
+  "be04d7434701a9ad37f80e497d3e2f9d19bbe012d16c6bbf4234db7bd29f107c938ddcfd492756060554ac513baef939"
+  "190c997d6483861c97fc5e00c6aa4516a24cf205811d7ebd0c7291c70b603cb660f3f43edc215b0d015a7efba3285982"
+  "ae2d79e68f710e30b8b2022baee7a09b4ea29a90d8c3c998c885b599f8aeb6da30c353353381fee67f333e7c44bbddc6";
+inline constexpr std::string_view sharedSecret =
+  "00fed4f2537d4505fd9b6c7be3cccbea025660092c7799a0222b85cccde1d88e29f1733c228f1b8607c945eaad583361"
+  "595d825c1273f22d27aea6e982536bb6ab8bbd44b7f8fd7162c4d0eeccc94d08120b46c01ab684435324598b94202fd6"
+  "ecc7e81bc1fcc5b677c9983d07a26c3129b8e40fa7692cdd85b7b569144a0c1aa6f1d41af29ea89fb90ade10edaccbb3"
+  "5b24d37effb6c241460d647e951b7c728fb3cd563ffbb7ecab82a04f7d3f078df6a1a97d5d555fc33ce3bceb0977bd81"
+  "955d493d388e23349e768d36f9c5bc36f4410141ba69f319048652ccefbaa8c65351cd6946d4b525063ac4ff990759c4"
+  "75fe42fcfd2082f3e92bbc6332cf5eeff3d8288571cb16a9a48d59fd1e5fa2042d80ef600a32c00bd61bb35880e22659"
+  "4e940599eb6087cbe79532ed23b9b5a6d1a6be7e561fc0cd1579ad33c7e01fe5ca0e24d26ebd5435456452e5c45c2df5"
+  "f1f735a0193a9cfe2917c8d9ba8991e8327cdf858e39d51c68961d3917bf7a6442ae95130e1676098aa30498ca2ed247";
+inline constexpr std::string_view privateC =
+  "076ce29972825060bcfdcf3f8ba3f1a62129661459e131ef5f4f0a388fb3582df46547";
+inline constexpr std::string_view publicC =
+  "00c8b371674655f579713b004547621cdb3e2b8daee46987279e25ee557c3000aa499ee87bbf72d461cd92d81c4e2aea"
+  "42cf68efa817595f6fa797c8c7b5d39e155b176bedaef832b3427b807da26f6a8df2ad328866c1d5aa8e77e4ac295f99"
+  "161e0875f66016f3cdd3777e14b9645e15ab31391514b3bd1784d2295c9789fb5dcff1eaa91f7276d4d81b56e134df8d"
+  "2b1bc95a1ee2d1fd83d40a013d8616dff39c978e2bc41c31ce72716b619279713a0bf5cb73576253a632f798b24dd6f5"
+  "f82b07101d5541b37e208d62358733f502ed9dbba5ce10ce4db68c84e46617015d0f2393eda0f9cad27ff7c9c88b22c8"
+  "8cf39eed3cd37376cb3f8338d6bd65955fdd56661e4635275054f7dfb727f2142558db82fce6c7939c856a9fa92be737"
+  "2e5220adeb72d1c4d34e393b6c8fe30addf4b7119c22f6d4276d4b20fddbac5e37852b3dde4ccd9bc3d1c72dca5ebd18"
+  "94f98ad80a59c935948d497ff2bde4571278efcdba409a1a1a77c67457190d725b858c5e70f574afc1a436e64cebfaf0";
+inline constexpr std::string_view sharedSecretAC =
+  "b539bb1069fde6a944c9a249d910b42235035c141490501303333c8dbde4b07a5e86a7fffc094592cc6692eb042372ec"
+  "fe0e036c4f700bd3e3a1c6b2cde1cfa4e1e1c6cf19654aa712ad723dfb0ef2dd60a32ccf6332b13decb715a014b7abd9"
+  "532e139c0aa9806eed1ec565341f4c7830a54c314d99e2dbc8fe8ed1217c69a4c48a1507a06777c9a381e725889274f9"
+  "08cd876d21116a770fde9727273ba2c733e31b91982e9ee2f1a6c7d2e920801bcc74048bbcd76bc97024b01a12711f70"
+  "2dc55ac92b8e88299026d4d770acbae1a1b2f7709d145c581278f8a6973d05a20cdfe45d07a0b41a756b9d545f290eab"
+  "d6c901cc27cf3091d559023cfccf53f310864a8d6c69ea390bae609d9e9c86771d88727a2163a29de5e09a021952b131"
+  "611632cf848b2b53852c22f06ece49a45d92dcc79e318924c8685345676a92fff0e66c29c51489e36a7c63ee26b4b30f"
+  "beb2cd10f0d31d5d2815837052378e3f7c3abb8cb9a9509442cf549b951884e16246e3a909950ef400ea5e15b1196c46";
+inline constexpr std::string_view primeMinusOne =
+  "ffffffffffffffffadf85458a2bb4a9aafdc5620273d3cf1d8b9c583ce2d3695a9e13641146433fbcc939dce249b3ef9"
+  "7d2fe363630c75d8f681b202aec4617ad3df1ed5d5fd65612433f51f5f066ed0856365553ded1af3b557135e7f57c935"
+  "984f0c70e0e68b77e2a689daf3efe8721df158a136ade73530acca4f483a797abc0ab182b324fb61d108a94bb2c8e3fb"
+  "b96adab760d7f4681d4f42a3de394df4ae56ede76372bb190b07a7c8ee0a6d709e02fce1cdf7e2ecc03404cd28342f61"
+  "9172fe9ce98583ff8e4f1232eef28183c3fe3b1b4c6fad733bb5fcbc2ec22005c58ef1837d1683b2c6f34a26c1b2effa"
+  "886b4238611fcfdcde355b3b6519035bbc34f4def99c023861b46fc9d6e6c9077ad91d2691f7f7ee598cb0fac186d91c"
+  "aefe130985139270b4130c93bc437944f4fd4452e2d74dd364f2e21e71f54bff5cae82ab9c9df69ee86d2bc522363a0d"
+  "abc521979b0deada1dbf9a42d5c4484e0abcd06bfa53ddef3c1b20ee3fd59d7c25e41d2b66c62e37fffffffffffffffe";
+}  // namespace ffdhe
+
+// Part 4 Table 101 data to sign. HASH is the policy's CertificateThumbprintAlgorithm; HASH of an
+// empty certificate is empty. Certificates are arbitrary bytes here: HASH covers the bytes as given.
+namespace signature_data
+{
+inline constexpr std::string_view thumbprint =
+  "1112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f40"
+  "4142434445464748494a4b4c4d4e4f50";
+inline constexpr std::string_view clientNonce =
+  "22232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041";
+inline constexpr std::string_view serverNonce =
+  "333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152";
+inline constexpr std::string_view serverCert =
+  "4445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f606162636465666768696a6b6c6d6e6f70717273"
+  "7475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9fa0a1a2a3"
+  "a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4b5b6b7b8b9babbbcbdbebfc0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3"
+  "d4d5d6d7d8d9dadbdcdddedfe0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfeff00010203"
+  "0405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f30313233"
+  "3435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f60616263"
+  "6465666768696a6b6c6d6e6f";
+inline constexpr std::string_view serverChannelCert =
+  "55565758595a5b5c5d5e5f606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f8081828384"
+  "85868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9fa0a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4"
+  "b5b6b7b8b9babbbcbdbebfc0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadbdcdddedfe0e1e2e3e4"
+  "e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfeff000102030405060708090a0b0c0d0e0f1011121314"
+  "15161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041424344"
+  "45464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f606162636465666768696a6b6c6d6e6f7071727374"
+  "75767778797a7b7c7d7e7f808182838485868788898a";
+inline constexpr std::string_view clientCert =
+  "666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f909192939495"
+  "969798999a9b9c9d9e9fa0a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4b5b6b7b8b9babbbcbdbebfc0c1c2c3c4c5"
+  "c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadbdcdddedfe0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5"
+  "f6f7f8f9fafbfcfdfeff000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425"
+  "262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152535455"
+  "565758595a5b5c5d5e5f606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f808182838485"
+  "868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9fa0a1a2a3a4a5";
+inline constexpr std::string_view clientChannelCert =
+  "7778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9fa0a1a2a3a4a5a6"
+  "a7a8a9aaabacadaeafb0b1b2b3b4b5b6b7b8b9babbbcbdbebfc0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6"
+  "d7d8d9dadbdcdddedfe0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfeff00010203040506"
+  "0708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f30313233343536"
+  "3738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f60616263646566"
+  "6768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f90919293949596"
+  "9798999a9b9c9d9e9fa0a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4b5b6b7b8b9babbbcbdbebfc0";
+inline constexpr std::string_view sha256ServerSignature =
+  "1112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f40"
+  "4142434445464748494a4b4c4d4e4f5022232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041"
+  "5f3edd61805888902cddd3dae9a9bef755151d9551b7e479660544d774717a30781cccaec1acd7498d352456bc1b9fa1"
+  "2184274a147f77b983905fdb4d02dcce333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152";
+inline constexpr std::string_view sha256ClientSignature =
+  "1112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f40"
+  "4142434445464748494a4b4c4d4e4f50333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152"
+  "a26d4d7905ec6f85b0941cb60e786b77001747ebd71f2a914ddac27600e905b25f3edd61805888902cddd3dae9a9bef7"
+  "55151d9551b7e479660544d774717a30781cccaec1acd7498d352456bc1b9fa12184274a147f77b983905fdb4d02dcce"
+  "22232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041";
+inline constexpr std::string_view sha256UserTokenSignature =
+  "1112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f40"
+  "4142434445464748494a4b4c4d4e4f50333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152"
+  "a26d4d7905ec6f85b0941cb60e786b77001747ebd71f2a914ddac27600e905b25f3edd61805888902cddd3dae9a9bef7"
+  "55151d9551b7e479660544d774717a30b52bc49fe7e4dcac8ee4c1294f549a024ce21bea0bbc70e2c7c9e3bec81f199d"
+  "781cccaec1acd7498d352456bc1b9fa12184274a147f77b983905fdb4d02dcce22232425262728292a2b2c2d2e2f3031"
+  "32333435363738393a3b3c3d3e3f4041";
+inline constexpr std::string_view sha256UserTokenSignatureNone =
+  "333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152a26d4d7905ec6f85b0941cb60e786b77"
+  "001747ebd71f2a914ddac27600e905b222232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041";
+inline constexpr std::string_view sha384ServerSignature =
+  "1112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f40"
+  "4142434445464748494a4b4c4d4e4f5022232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041"
+  "8c9ceb1da73c2817e84c79d83706f15d43972e47db7471f6c1a11086caa13c205189bf3052b6884ffe732046ce6245fd"
+  "608d682e9b3a0a74fe85e4842d75a193b4fd0cbae98437357de5a2b7e9e68f8238f11c1e961a25046914ef75b0bf7018"
+  "333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152";
+inline constexpr std::string_view sha384ClientSignature =
+  "1112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f40"
+  "4142434445464748494a4b4c4d4e4f50333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152"
+  "13bff5d42711b8d5df9931411b571986e4b1101357001bfdb146fca2069826081680291706edec7064c47ce1d0ec16e8"
+  "8c9ceb1da73c2817e84c79d83706f15d43972e47db7471f6c1a11086caa13c205189bf3052b6884ffe732046ce6245fd"
+  "608d682e9b3a0a74fe85e4842d75a193b4fd0cbae98437357de5a2b7e9e68f8238f11c1e961a25046914ef75b0bf7018"
+  "22232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041";
+inline constexpr std::string_view sha384UserTokenSignature =
+  "1112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f40"
+  "4142434445464748494a4b4c4d4e4f50333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152"
+  "13bff5d42711b8d5df9931411b571986e4b1101357001bfdb146fca2069826081680291706edec7064c47ce1d0ec16e8"
+  "8c9ceb1da73c2817e84c79d83706f15d43972e47db7471f6c1a11086caa13c205189bf3052b6884ffe732046ce6245fd"
+  "67fa3222a9ffa9fb28b5a87b7c5db88070b75f08f985332c472735eeaf10b31a8c2c659e52650896560ceb9ac47b3565"
+  "608d682e9b3a0a74fe85e4842d75a193b4fd0cbae98437357de5a2b7e9e68f8238f11c1e961a25046914ef75b0bf7018"
+  "22232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041";
+inline constexpr std::string_view sha384UserTokenSignatureNone =
+  "333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f50515213bff5d42711b8d5df9931411b571986"
+  "e4b1101357001bfdb146fca2069826081680291706edec7064c47ce1d0ec16e822232425262728292a2b2c2d2e2f3031"
+  "32333435363738393a3b3c3d3e3f4041";
+inline constexpr std::string_view sha256ClientSignatureWithEmptyClientChannelCert =
+  "1112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f40"
+  "4142434445464748494a4b4c4d4e4f50333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152"
+  "a26d4d7905ec6f85b0941cb60e786b77001747ebd71f2a914ddac27600e905b25f3edd61805888902cddd3dae9a9bef7"
+  "55151d9551b7e479660544d774717a3022232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f4041";
+}  // namespace signature_data
+
+// EccEncryptedSecrets under ECC_curve25519_AesGcm and ECC_curve25519_ChaChaPoly, built here as Part 4 Table
+// 183 and Part 6 6.8.3 describe them. Ed25519 signs deterministically, so the vectors are byte-stable. The
+// associated data is every byte from TypeId through KeyData; the 16-byte tag follows PayloadPaddingSize.
+// The short secret takes the formula's extra block: its padding plus the secret is under 16 bytes.
+namespace encrypted_secret
+{
+inline constexpr std::string_view signingCertificate =
+  "3081e0308193a003020102020101300506032b6570301a3118301606035504030c0f536365566563746f72436c69656e"
+  "74301e170d3236303130313030303030305a170d3336303130313030303030305a301a3118301606035504030c0f5363"
+  "65566563746f72436c69656e74302a300506032b657003210011d624e49226d43c8c28e937f362640aaec1e00215fd65"
+  "34b461118059220a5b300506032b6570034100202ef63404cb1be4daebaf3026e9cce8e778139d796bffb022db1c1b3a"
+  "dc67b819f92ce2a9c321f0957a77d3e4f65da33fae3fc2996b5c762c69a842459efe08";
+inline constexpr std::string_view receiverPrivateKey =
+  "b1b2b3b4b5b6b7b8b9babbbcbdbebfc0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0";
+inline constexpr std::string_view receiverPublicKey =
+  "cd700e88f9e99b19c1a8a8dcd58182fd101e5e032a69ce317fde23e8ee265c51";
+inline constexpr std::string_view nonce = "42434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f6061";
+inline constexpr std::string_view shortSecret = "707721";
+inline constexpr std::string_view longSecret = "612070617373776f7264206f662032342062797465732121";
+inline constexpr std::string_view aesGcmSecret =
+  "01008a44010d02000040000000687474703a2f2f6f7063666f756e646174696f6e2e6f72672f55412f53656375726974"
+  "79506f6c696379234543435f637572766532353531395f41657347636de30000003081e0308193a00302010202010130"
+  "0506032b6570301a3118301606035504030c0f536365566563746f72436c69656e74301e170d32363031303130303030"
+  "30305a170d3336303130313030303030305a301a3118301606035504030c0f536365566563746f72436c69656e74302a"
+  "300506032b657003210011d624e49226d43c8c28e937f362640aaec1e00215fd6534b461118059220a5b300506032b65"
+  "70034100202ef63404cb1be4daebaf3026e9cce8e778139d796bffb022db1c1b3adc67b819f92ce2a9c321f0957a77d3"
+  "e4f65da33fae3fc2996b5c762c69a842459efe0800c046cd3751dd014800200000009cced751b301bbd16c4fb8deddd8"
+  "2f18925d71ed90c844fa0158f845b0fa7f4b20000000cd700e88f9e99b19c1a8a8dcd58182fd101e5e032a69ce317fde"
+  "23e8ee265c513b40ba27cb41fc6815162b17acc1a8eefc4ce907ed52ec716b399fa74212e0016f3703d7d9accfde924b"
+  "25a3665984a968a8b70a7684876e869a66261593dc32f74415e723f9a0656360e4a17add1684e3d8dd630295fe596208"
+  "6489b505369d7a354a7dff33c588c44a247eeb470039a172d12985c46edf21b5c4b1ac885a9a81e70273ed859176cd66"
+  "64e4b0959e0f";
+inline constexpr uint32_t aesGcmPayloadOffset = 0x00000186U;
+inline constexpr uint32_t aesGcmTagOffset = 0x000001C6U;
+inline constexpr uint32_t aesGcmPaddingSize = 0x00000013U;
+inline constexpr uint32_t aesGcmSigningTimeOffset = 0x00000134U;
+inline constexpr std::string_view chaChaPolySecret =
+  "01008a44012102000044000000687474703a2f2f6f7063666f756e646174696f6e2e6f72672f55412f53656375726974"
+  "79506f6c696379234543435f637572766532353531395f436861436861506f6c79e30000003081e0308193a003020102"
+  "020101300506032b6570301a3118301606035504030c0f536365566563746f72436c69656e74301e170d323630313031"
+  "3030303030305a170d3336303130313030303030305a301a3118301606035504030c0f536365566563746f72436c6965"
+  "6e74302a300506032b657003210011d624e49226d43c8c28e937f362640aaec1e00215fd6534b461118059220a5b3005"
+  "06032b6570034100202ef63404cb1be4daebaf3026e9cce8e778139d796bffb022db1c1b3adc67b819f92ce2a9c321f0"
+  "957a77d3e4f65da33fae3fc2996b5c762c69a842459efe0800c046cd3751dd014800200000009cced751b301bbd16c4f"
+  "b8deddd82f18925d71ed90c844fa0158f845b0fa7f4b20000000cd700e88f9e99b19c1a8a8dcd58182fd101e5e032a69"
+  "ce317fde23e8ee265c51f1d8e66343c5211bf16345beda7fbd6618e38c7aade537c00e3f436057cb635327f5c5cab82e"
+  "7ae9a59c37eff180e42e37ff91124f903284847f61ad32d08772f49087fde68aeca361ff0de241e4a650db20c8ea144e"
+  "7b98c722d526df8bd48ae8d78c760b75707bcfbb27b6c1b620c0e8ea3613fe5920ad636760bc0d62c662c4ea79920fd9"
+  "3479fc98c78169ecf20ec6ebbbf9dab312106f4363065db10807";
+inline constexpr uint32_t chaChaPolyPayloadOffset = 0x0000018AU;
+inline constexpr uint32_t chaChaPolyTagOffset = 0x000001DAU;
+inline constexpr uint32_t chaChaPolyPaddingSize = 0x0000000EU;
+inline constexpr uint32_t chaChaPolySigningTimeOffset = 0x00000138U;
+}  // namespace encrypted_secret
+
+}  // namespace ua::test::sce_vectors

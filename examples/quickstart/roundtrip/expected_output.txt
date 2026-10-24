@@ -1,0 +1,12 @@
+=== quickstart/roundtrip ===
+A secure OPC UA server and client in one process.
+
+  1. Created a certificate for each half
+  2. Each half now trusts the other's certificate
+  3. Server listening, one Basic256Sha256 SignAndEncrypt endpoint
+     opc.tcp://127.0.0.1:<port>
+  4. Client opened a secure channel and an activated Session
+  5. Read ServerStatus State = Running
+  6. Closed the Session, then stopped both halves
+
+OK  quickstart/roundtrip

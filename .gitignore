@@ -1,0 +1,41 @@
+# Build and generated output. The top-level build/ tree holds everything generated:
+# compiled artefacts, generated documentation, and generated reference pages.
+/build/
+/output/
+/Testing/
+/.idea/
+/cmake-build-*/
+/build-consume/
+/__cmake_systeminformation/
+
+# CI-runtime salt written by the vcpkg consume gate to force a fresh port build per commit.
+ports/uasdk/source-revision
+
+# Conan test_package build artifacts
+test_package/build/
+test_package/CMakeUserPresets.json
+
+# Scratch working notes — never committed.
+/temp/
+
+# Scan and analysis output. These tools write out of tree by default
+# (${XDG_CACHE_HOME:-~/.cache}/uasdk); this covers an explicit in-tree redirect.
+/security-out/
+/.ci-validate-cache/
+
+# Python bytecode caches and local virtualenvs — generated, never tracked.
+__pycache__/
+.venv*/
+
+# Stray object files from ad-hoc local compiles (e.g. ua_security_policy.o).
+*.o
+
+# Extracted compliance-tool AppImage (not source)
+squashfs-root/
+*.AppImage
+
+# Runtime artefacts an example writes into whatever directory it is run from.
+# Running an example by hand from the repository root drops these here. pki/ holds a
+# generated application private key, so an accidental `git add` would commit key material.
+/ServerConfig.json
+/pki/

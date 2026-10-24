@@ -1,0 +1,55 @@
+# Doxygen configuration for the public API reference.
+#
+# Scope: the public surface only (sdk/interface). Emits XML (no HTML) into the
+# top-level build/ tree; a generator turns that XML into MDX reference pages for
+# the docs site.
+
+# Project
+PROJECT_NAME           = "OPC UA SDK"
+PROJECT_NUMBER         = "1.0.0"
+OUTPUT_DIRECTORY       = build/documentation/doxygen
+
+# Extraction - public surface only. EXTRACT_ALL=NO so an undocumented public
+# symbol is omitted from the reference AND flagged by WARN_IF_UNDOCUMENTED below
+# (the documentation gate). The hand-written backlog is cleared and the type
+# generator now emits house-style blocks for all generated members, so the gate
+# is enforced rather than deferred.
+EXTRACT_ALL            = NO
+EXTRACT_PRIVATE        = NO
+EXTRACT_STATIC         = YES
+HIDE_UNDOC_MEMBERS     = NO
+
+# The house style uses the first sentence as the brief (no explicit @brief).
+JAVADOC_AUTOBRIEF      = YES
+
+# Input - the public interface only.
+INPUT                  = sdk/interface
+RECURSIVE              = YES
+FILE_PATTERNS          = *.h
+STRIP_FROM_PATH        = sdk/interface
+
+
+# XML output (the API-reference feed). No HTML/LaTeX.
+GENERATE_XML           = YES
+XML_OUTPUT             = xml
+XML_PROGRAMLISTING     = YES
+GENERATE_HTML          = YES
+GENERATE_LATEX         = NO
+
+# Preprocessing
+ENABLE_PREPROCESSING   = YES
+MACRO_EXPANSION        = YES
+SEARCH_INCLUDES        = YES
+
+# Warnings are FATAL - this is the documentation gate. Doxygen fails on any
+# undocumented public symbol, malformed doc block, or broken @ref/@snippet. The
+# hand-written backlog is cleared and the generator emits blocks for all generated
+# members, so the gate is green. (The CI `docs` job additionally gates on the
+# snippet compile-check and the static-site build.)
+QUIET                  = YES
+WARN_IF_UNDOCUMENTED   = YES
+WARN_NO_PARAMDOC       = YES
+WARN_AS_ERROR          = FAIL_ON_WARNINGS
+
+# Skip graphviz/plantuml - not needed for XML.
+HAVE_DOT               = NO

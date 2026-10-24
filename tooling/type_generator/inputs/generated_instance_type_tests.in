@@ -1,0 +1,63 @@
+#include <gtest/gtest.h>
+
+#include "ua_address_space.h"
+#include "ua_data_type_registration.h"
+#include "ua_encoding_limits.h"
+#include "ua_file_stream.h"
+#include "ua_namespace_array.h"
+#include "ua_object_id.h"
+#include "ua_structure_factory.h"
+#include <boost/asio/thread_pool.hpp>
+#include "ua_nodeset_import_engine.h"
+#include "ua_nodeset_parser.h"
+
+PLACEHOLDER_INCLUDES
+
+using namespace ua;
+using namespace ua::xml::nodeset;
+
+class GeneratedInstanceTypeTests : public ::testing::Test
+{
+protected:
+  static void SetUpTestSuite()
+  {
+    const auto cfg = ApplicationConfig::load_default();
+    const auto limits = make_encoding_limits(cfg);
+
+    threadPool.emplace();
+    addressSpace.emplace(AddressSpace::create("uri:test", threadPool->get_executor()));
+
+    StructureFactory structureFactory;
+    auto lookupFn = namespace_array_utils::get_index_lookup_function(*addressSpace);
+    const CodecNamespaceContext nsConfig{std::move(lookupFn), {}, {}, {}};
+    register_ua_data_types_with_factory(nsConfig, &structureFactory, &structureFactory);
+
+    FileStream inputStream{"NodeSet2.xml"};
+    inputStream.open_for_read();
+    auto nodeSets = Parser::parse(limits,
+      inputStream,
+      structureFactory,
+      addressSpace->namespace_array(),
+      addressSpace->server_array(),
+      Parser::GetDependentModelCallback{});
+
+    auto importer = ImportEngine::create(limits, *addressSpace, nodeSets, {});
+    importer->import_all_sync({}, {});
+  }
+
+  static void TearDownTestSuite()
+  {
+    addressSpace.reset();
+    if (threadPool)
+      threadPool->join();
+    threadPool.reset();
+  }
+
+  static optional<boost::asio::thread_pool> threadPool;
+  static optional<AddressSpace> addressSpace;
+};
+
+optional<boost::asio::thread_pool> GeneratedInstanceTypeTests::threadPool;
+optional<AddressSpace> GeneratedInstanceTypeTests::addressSpace;
+
+PLACEHOLDER_TEST_CASES

@@ -1,0 +1,34 @@
+#ifndef PLACEHOLDER_HEADER_GUARD
+#define PLACEHOLDER_HEADER_GUARD
+
+#include <string>
+#include <string_view>
+#include "ua_data_type_trait.h"
+#include "ua_includes.h"
+PLACEHOLDER_SPEC_INCLUDES
+
+PLACEHOLDER_NS_OPEN
+
+PLACEHOLDER_DOC
+enum class PLACEHOLDER_CLASS_NAME : int32_t
+{
+PLACEHOLDER_VALUES
+};
+
+PLACEHOLDER_TO_STRING_DECLARATION
+
+PLACEHOLDER_IS_VALID_DECLARATION
+
+PLACEHOLDER_NS_CLOSE
+
+/// The OPC UA DataType of the PLACEHOLDER_CLASS_NAME enumeration, read by `ua::data_type_of`.
+template<>
+struct ua::DataTypeOf<PLACEHOLDER_CPP_NAMESPACE::PLACEHOLDER_CLASS_NAME>
+{
+  /// The DataType's identifier in its namespace.
+  static constexpr PLACEHOLDER_CPP_NAMESPACE::DataTypeId id{PLACEHOLDER_CPP_NAMESPACE::DataTypeId::PLACEHOLDER_CLASS_NAME};
+  /// The namespace that owns the DataType.
+  static constexpr std::string_view namespaceUri = PLACEHOLDER_CPP_NAMESPACE::specNamespaceUri;
+};
+
+#endif // !PLACEHOLDER_HEADER_GUARD

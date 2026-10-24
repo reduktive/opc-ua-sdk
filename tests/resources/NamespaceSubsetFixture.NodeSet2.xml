@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UANodeSet xmlns="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:uax="http://opcfoundation.org/UA/2008/02/Types.xsd">
+    <NamespaceUris>
+        <Uri>urn:example:namespace-subset</Uri>
+        <Uri>urn:example:namespace-already-subset</Uri>
+    </NamespaceUris>
+
+    <UAObject NodeId="ns=1;i=5000" BrowseName="1:NamespaceMetadata">
+        <References>
+            <Reference ReferenceType="i=40">i=11616</Reference>
+            <Reference ReferenceType="i=46">ns=1;i=5001</Reference>
+        </References>
+    </UAObject>
+
+    <UAVariable NodeId="ns=1;i=5001" BrowseName="0:IsNamespaceSubset"
+                ParentNodeId="ns=1;i=5000" DataType="i=1">
+        <References>
+            <Reference ReferenceType="i=46" IsForward="false">ns=1;i=5000</Reference>
+            <Reference ReferenceType="i=40">i=68</Reference>
+        </References>
+        <Value>
+            <uax:Boolean>false</uax:Boolean>
+        </Value>
+    </UAVariable>
+
+    <!-- Same BrowseName, but not a NamespaceMetadataType Property. It must never be rewritten. -->
+    <UAVariable NodeId="ns=1;i=5002" BrowseName="0:IsNamespaceSubset" DataType="i=1">
+        <References>
+            <Reference ReferenceType="i=40">i=68</Reference>
+        </References>
+        <Value>
+            <uax:Boolean>false</uax:Boolean>
+        </Value>
+    </UAVariable>
+
+    <!-- The filtered import omits this node, making the imported namespace content incomplete. -->
+    <UAObject NodeId="ns=1;i=5003" BrowseName="1:ExcludedObject"/>
+
+    <!-- The source already states TRUE. Partial-import correction must never lower it. -->
+    <UAObject NodeId="ns=2;i=6000" BrowseName="2:AlreadySubsetMetadata">
+        <References>
+            <Reference ReferenceType="i=40">i=11616</Reference>
+            <Reference ReferenceType="i=46">ns=2;i=6001</Reference>
+        </References>
+    </UAObject>
+
+    <UAVariable NodeId="ns=2;i=6001" BrowseName="0:IsNamespaceSubset"
+                ParentNodeId="ns=2;i=6000" DataType="i=1">
+        <References>
+            <Reference ReferenceType="i=46" IsForward="false">ns=2;i=6000</Reference>
+            <Reference ReferenceType="i=40">i=68</Reference>
+        </References>
+        <Value>
+            <uax:Boolean>true</uax:Boolean>
+        </Value>
+    </UAVariable>
+</UANodeSet>

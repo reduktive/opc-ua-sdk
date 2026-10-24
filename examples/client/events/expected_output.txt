@@ -1,0 +1,13 @@
+=== client/events ===
+Be told when something happens, not just when a value changes.
+
+  1. Connected to opc.tcp://127.0.0.1:<port> and resolved Tank/Fill
+  2. Subscribed to events from the Server Object
+  3. Filled by 40 (below the threshold), event raised: false
+  4. Filled by 45 (past the threshold), event received
+     Source:   Tank
+     Severity: 700
+     Message:  Tank level 95 reached the high threshold
+  5. Closed the Session and stopped the client
+
+OK  client/events

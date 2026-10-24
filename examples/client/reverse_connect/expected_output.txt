@@ -1,0 +1,11 @@
+=== client/reverse_connect ===
+Listen for the server to call, then drive as usual.
+
+  1. Client ready
+  2. Listening on opc.tcp://127.0.0.1:<port> for one named server
+  3. The server dialled in; opened a Basic256Sha256 SignAndEncrypt channel
+  4. Created and activated a Session over that channel
+  5. Read the server's state: Running
+  6. Closed the Session, the channel, and the listener
+
+OK  client/reverse_connect

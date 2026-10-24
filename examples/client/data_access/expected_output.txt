@@ -1,0 +1,16 @@
+=== client/data_access ===
+Read a measurement with the range and units that explain it.
+
+  1. Connected to opc.tcp://127.0.0.1:<port>
+  2. Read Temperature as an AnalogUnitRangeType
+     82.5 degC, range 0 to 200
+  3. Read Pump as a TwoStateDiscreteType
+     true, which this server calls 'Running'
+  4. Monitored Temperature with a 10 percent deadband
+     Initial value 82.5
+  5. Wrote 90 then 130; the item's next value was 130
+  6. A 150 percent deadband is refused: BadDeadbandFilterInvalid (0x808E0000)
+     A percent deadband is a percentage of EURange, so only 0 to 100 can mean anything.
+  7. Closed the Subscription, the Session, and the client
+
+OK  client/data_access

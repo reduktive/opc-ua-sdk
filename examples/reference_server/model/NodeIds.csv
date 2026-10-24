@@ -1,0 +1,12 @@
+DemoType,1001,ObjectType
+DemoType_UptimeSeconds,1002,Variable
+DemoType_Setpoint,1003,Variable
+DemoType_Divide,1004,Method
+DemoType_Divide_InputArguments,1005,Variable
+DemoType_Divide_OutputArguments,1006,Variable
+Demo,2001,Object
+Demo_UptimeSeconds,2002,Variable
+Demo_Setpoint,2003,Variable
+Demo_Divide,2004,Method
+Demo_Divide_InputArguments,2005,Variable
+Demo_Divide_OutputArguments,2006,Variable

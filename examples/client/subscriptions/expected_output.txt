@@ -1,0 +1,13 @@
+=== client/subscriptions ===
+Be told when a value changes, instead of asking for it.
+
+  1. Connected to opc.tcp://127.0.0.1:<port> and resolved Demo/Setpoint
+  2. Created a Subscription, revised interval <duration> ms
+  3. Monitored Setpoint twice: no filter, and a 5 absolute deadband
+     Initial value, unfiltered: 25
+     Initial value, deadband:   25
+  4. Wrote 31, unfiltered item reported 31, deadband item reported 31
+  5. Wrote 32 then 50, deadband item's next value was 50
+  6. Closed the Subscription, the Session, and the client
+
+OK  client/subscriptions

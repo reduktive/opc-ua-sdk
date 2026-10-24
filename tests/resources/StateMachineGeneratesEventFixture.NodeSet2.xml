@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UANodeSet xmlns="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:uax="http://opcfoundation.org/UA/2008/02/Types.xsd">
+    <NamespaceUris>
+        <Uri>urn:example:state-machine-closure</Uri>
+    </NamespaceUris>
+
+    <!-- Minimal standard roots needed to classify the isolated custom declarations. -->
+    <UAObjectType NodeId="i=2041" BrowseName="BaseEventType" IsAbstract="true"/>
+    <UAObjectType NodeId="i=2310" BrowseName="TransitionType" IsAbstract="false"/>
+    <UAObjectType NodeId="i=2771" BrowseName="FiniteStateMachineType" IsAbstract="true"/>
+
+    <UAObjectType NodeId="ns=1;i=7000" BrowseName="1:FixtureMachineType" IsAbstract="false">
+        <References>
+            <Reference ReferenceType="i=45" IsForward="false">i=2771</Reference>
+            <Reference ReferenceType="i=47">ns=1;i=7001</Reference>
+            <Reference ReferenceType="i=47">ns=1;i=7002</Reference>
+            <Reference ReferenceType="i=47">ns=1;i=7005</Reference>
+            <!-- This edge is already complete and must not be duplicated. -->
+            <Reference ReferenceType="i=41">ns=1;i=7004</Reference>
+        </References>
+    </UAObjectType>
+
+    <!-- Missing GeneratesEvent: the importer must derive MachineType -> EventA. -->
+    <UAObject NodeId="ns=1;i=7001" BrowseName="1:MissingAdvertisement" ParentNodeId="ns=1;i=7000">
+        <References>
+            <Reference ReferenceType="i=47" IsForward="false">ns=1;i=7000</Reference>
+            <Reference ReferenceType="i=40">i=2310</Reference>
+            <Reference ReferenceType="i=54">ns=1;i=7003</Reference>
+        </References>
+    </UAObject>
+
+    <!-- Existing GeneratesEvent: importing and re-importing must retain exactly one edge. -->
+    <UAObject NodeId="ns=1;i=7002" BrowseName="1:ExistingAdvertisement" ParentNodeId="ns=1;i=7000">
+        <References>
+            <Reference ReferenceType="i=47" IsForward="false">ns=1;i=7000</Reference>
+            <Reference ReferenceType="i=40">i=2310</Reference>
+            <Reference ReferenceType="i=54">ns=1;i=7004</Reference>
+        </References>
+    </UAObject>
+
+    <!-- HasEffect is not restricted to EventTypes; this target must not become GeneratesEvent. -->
+    <UAObject NodeId="ns=1;i=7005" BrowseName="1:NonEventEffect" ParentNodeId="ns=1;i=7000">
+        <References>
+            <Reference ReferenceType="i=47" IsForward="false">ns=1;i=7000</Reference>
+            <Reference ReferenceType="i=40">i=2310</Reference>
+            <Reference ReferenceType="i=54">ns=1;i=7006</Reference>
+        </References>
+    </UAObject>
+
+    <UAObjectType NodeId="ns=1;i=7003" BrowseName="1:EventA" IsAbstract="false">
+        <References>
+            <Reference ReferenceType="i=45" IsForward="false">i=2041</Reference>
+        </References>
+    </UAObjectType>
+    <UAObjectType NodeId="ns=1;i=7004" BrowseName="1:EventB" IsAbstract="false">
+        <References>
+            <Reference ReferenceType="i=45" IsForward="false">i=2041</Reference>
+        </References>
+    </UAObjectType>
+    <UAObjectType NodeId="ns=1;i=7006" BrowseName="1:NonEventEffectType" IsAbstract="false"/>
+</UANodeSet>

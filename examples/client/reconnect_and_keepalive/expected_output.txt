@@ -1,0 +1,13 @@
+=== client/reconnect_and_keepalive ===
+Survive a server that goes away and comes back.
+
+  1. Connected to opc.tcp://127.0.0.1:<port> with a reconnect policy
+  2. Subscribed to Demo/Setpoint
+  3. Waiting for the server to restart
+  4. Server went away; the Connection is reconnecting, not failed
+  5. Server came back; the Connection recovered on its own
+     Session recreated, subscriptions recreated, monitored items recreated: 1
+  6. Subscription still delivering: reported 64
+  7. Closed the Session and stopped the client
+
+OK  client/reconnect_and_keepalive

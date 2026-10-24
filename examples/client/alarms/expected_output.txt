@@ -1,0 +1,11 @@
+=== client/alarms ===
+Track what is currently wrong, then acknowledge it.
+
+  1. Connected to opc.tcp://127.0.0.1:<port>
+  2. Refreshed: Boiler.Temperature [inactive, unacknowledged]
+  3. Heated past the threshold: Boiler.Temperature [active, unacknowledged]
+  4. Acknowledged: Boiler.Temperature [active, acknowledged]
+  5. Cooled back down, nothing left to act on: nothing retained
+  6. Closed the Session and stopped the client
+
+OK  client/alarms

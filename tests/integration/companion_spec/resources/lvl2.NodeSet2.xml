@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Synthetic level-2 companion spec for multi-level stacking (Phase B / item 5).
+     Lvl2Line has a field typed by lvl1's Lvl1Point (a non-NS0 lookup spec), so the
+     generated lvl2 struct must reference ua::lvl1::Lvl1Point + #include "ua_lvl1_..".
+     Namespace indices in THIS file: 1 = lvl2 (self), 2 = lvl1. -->
+<UANodeSet xmlns="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:uax="http://opcfoundation.org/UA/2008/02/Types.xsd">
+    <NamespaceUris>
+        <Uri>urn:example:lvl2</Uri>
+        <Uri>urn:example:lvl1</Uri>
+    </NamespaceUris>
+    <Aliases>
+        <Alias Alias="Int32">i=6</Alias>
+        <Alias Alias="HasSubtype">i=45</Alias>
+        <Alias Alias="HasEncoding">i=38</Alias>
+        <Alias Alias="HasTypeDefinition">i=40</Alias>
+    </Aliases>
+
+    <UADataType NodeId="ns=1;i=3001" BrowseName="1:Lvl2Line">
+        <DisplayName>Lvl2Line</DisplayName>
+        <References>
+            <Reference ReferenceType="HasEncoding">ns=1;i=5001</Reference>
+            <Reference ReferenceType="HasEncoding">ns=1;i=5002</Reference>
+            <Reference ReferenceType="HasSubtype" IsForward="false">i=22</Reference>
+        </References>
+        <Definition Name="1:Lvl2Line">
+            <Field Name="StartPoint" DataType="ns=2;i=3001" />
+            <Field Name="EndPoint" DataType="ns=2;i=3001" />
+            <Field Name="Thickness" DataType="Int32" />
+        </Definition>
+    </UADataType>
+
+    <UAObject NodeId="ns=1;i=5001" BrowseName="Default Binary" SymbolicName="DefaultBinary">
+        <DisplayName>Default Binary</DisplayName>
+        <References>
+            <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=3001</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+        </References>
+    </UAObject>
+
+    <UAObject NodeId="ns=1;i=5002" BrowseName="Default XML" SymbolicName="DefaultXml">
+        <DisplayName>Default XML</DisplayName>
+        <References>
+            <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=3001</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=76</Reference>
+        </References>
+    </UAObject>
+</UANodeSet>

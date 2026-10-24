@@ -1,0 +1,13 @@
+=== client/custom_types ===
+Decode a structure this program was never built for.
+
+  1. Connected to opc.tcp://127.0.0.1:<port> and resolved Reading
+  2. Read the value; its type resolved to PumpReading
+  3. It has 4 fields, described by the server:
+     SerialNumber = String(PMP-1043)
+     FlowRate = Double(12.5)
+     Pressure = Double(4.25)
+     MaintenanceNote (optional) = String(Impeller replaced 2026-08-14)
+  4. Closed the Session and stopped the client
+
+OK  client/custom_types

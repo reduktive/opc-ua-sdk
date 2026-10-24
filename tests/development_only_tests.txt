@@ -1,0 +1,15 @@
+# Tests that cannot run from a published source tree, one GoogleTest pattern per line.
+# tests/CMakeLists.txt leaves them out of ctest when internal/ is absent, and the public-repo
+# verification leaves them out of its suite runs. The development checkout runs all of them.
+
+# Read the SDK's own sources and their traceability inventory, found through internal/.
+ClientSignatureVerificationStructureTest.CertificateContinuityPrecedesSessionIdentityMaterialization
+ServerAsyncSurfaceCatalogueTest.EveryServerAsyncEntryPointHasACatalogueRow
+AuditEventEmitterStructureTest.EveryObserverHookUsesTheFailureContainedEmissionInterface
+
+# Read standard_client_2025_capacities.md, which the build copies from the development checkout.
+StandardClientCapacityManifest.*
+StandardClientCapacityPackage.*
+
+# Need a toxiproxy service; run them with --gtest_filter='Chaos.*' once one is listening on 8474.
+Chaos.*

@@ -1,0 +1,20 @@
+=== server/diagnostics ===
+What a running server can tell you about itself.
+
+  1. Created the server with a ServerObserver installed
+  2. Listening, one Basic256Sha256 SignAndEncrypt endpoint
+     opc.tcp://127.0.0.1:<port>
+     Before any client: 0 Sessions now, 0 since the server started
+  3. A client connected and read one Variable
+     Session created, name 'diagnostics probe'
+     Session activated, user 'anonymous'
+  4. Sampled the server-wide and per-Session counters
+     With one client: 1 Sessions now, 1 since the server started
+     'diagnostics probe': 2 requests, 2 reads, 0 browses, 0 unauthorized
+  5. The session gauge fell back; the cumulative total did not
+     Session closed
+     After the Session closed: 0 Sessions now, 1 since the server started
+     Press Ctrl+C to stop.
+  6. Stopped on Ctrl+C
+
+OK  server/diagnostics

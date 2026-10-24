@@ -1,0 +1,12 @@
+=== server/minimal ===
+The smallest standalone secure OPC UA server.
+
+  1. Opened the development PKI
+  2. Created the server
+  3. Published Demo/Setpoint in namespace urn:reduktive:opcua-sdk:example:minimal
+  4. Listening, one Basic256Sha256 SignAndEncrypt endpoint
+     opc.tcp://127.0.0.1:<port>
+     Run example_client_minimal in another terminal. Press Ctrl+C to stop.
+  5. Stopped on Ctrl+C
+
+OK  server/minimal

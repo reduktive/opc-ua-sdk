@@ -1,0 +1,11 @@
+=== server/reverse_connect ===
+Dial out to a listening client instead of waiting.
+
+  1. Created the server, with no listener of its own
+  2. Published Demo/Setpoint for the client to read
+  3. Dialling opc.tcp://127.0.0.1:<port>, retrying every 2s
+     Advertising itself as opc.tcp://localhost:<port>
+     Run example_client_reverse_connect in another terminal. Press Ctrl+C to stop.
+  4. Stopped dialling and shut down on Ctrl+C
+
+OK  server/reverse_connect

@@ -1,0 +1,12 @@
+=== server/data_access ===
+Publish measurements that carry their own range and units.
+
+  1. Created the server
+  2. Published Boiler/Temperature, EURange 0 to 200 degC
+  3. Published Boiler/Pump, 'Running' or 'Stopped'
+  4. Listening, one Basic256Sha256 SignAndEncrypt endpoint
+     opc.tcp://127.0.0.1:<port>
+     Run example_client_data_access in another terminal. Press Ctrl+C to stop.
+  5. Stopped on Ctrl+C
+
+OK  server/data_access

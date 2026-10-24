@@ -1,0 +1,63 @@
+PLACEHOLDER_ENCODING_DETAILS
+
+PLACEHOLDER_ENCODE_ID_DETAILS
+
+PLACEHOLDER_CREATE
+
+bool PLACEHOLDER_CLASS_NAME::is_of_type(const CodecNamespaceContext& ns, const NodeId& dataTypeId) const
+{
+  NodeId myTypeId{ns.getNamespaceIndex(typeNamespaceUri), utils::to_underlying(typeId)};
+  if (dataTypeId == myTypeId)
+  {
+    return true;
+  }
+
+  return PLACEHOLDER_BASE_CLASS_NAME::is_of_type(ns, dataTypeId);
+}
+
+NodeId PLACEHOLDER_CLASS_NAME::type_id(const CodecNamespaceContext& ns) const
+{
+  return NodeId{ns.getNamespaceIndex(typeNamespaceUri), utils::to_underlying(typeId)};
+}
+
+ExpandedNodeId PLACEHOLDER_CLASS_NAME::type_id() const
+{
+  return ExpandedNodeId{NodeId{0, utils::to_underlying(typeId)}, typeNamespaceUri};
+}
+
+String PLACEHOLDER_CLASS_NAME::type_name() const
+{
+  return typeName;
+}
+
+void PLACEHOLDER_CLASS_NAME::encode(StackDepth limit, Encoder& encoder) const
+{
+PLACEHOLDER_ENCODE_BODY
+}
+
+void PLACEHOLDER_CLASS_NAME::encode_id(
+  StackDepth limit, const CodecNamespaceContext& ns, Encoder& encoder) const
+{
+PLACEHOLDER_ENCODE_ID_BODY
+}
+
+void PLACEHOLDER_CLASS_NAME::decode(StackDepth limit, Decoder& decoder)
+{
+PLACEHOLDER_DECODE_BODY
+}
+
+PLACEHOLDER_RESOLVE_DEFINITION
+
+PLACEHOLDER_CLONE_DEFINITION
+
+PLACEHOLDER_TO_STRING_DEFINITION
+
+PLACEHOLDER_REGISTER_DEFINITION
+
+PLACEHOLDER_FIELD_ACCESSORS
+
+BuiltInTypeId PLACEHOLDER_CLASS_NAME::built_in_type_id()
+{
+  return BuiltInTypeId{BuiltInTypeId::ExtensionObject};
+}
+

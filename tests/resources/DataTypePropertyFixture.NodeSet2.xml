@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UANodeSet xmlns="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:uax="http://opcfoundation.org/UA/2008/02/Types.xsd">
+    <NamespaceUris>
+        <Uri>urn:example:datatypeprops</Uri>
+    </NamespaceUris>
+
+    <!-- An enumeration DataType (subtype of Enumeration i=29) carrying its EnumStrings value as a
+         HasProperty child whose ParentNodeId IS the DataType. This mirrors the NS0 shape of
+         ServerState (i=852) / EnumStrings (i=7612): the property's parent is a DataType, not an
+         ObjectType/VariableType. The TypeDefinitionsOnly import must still pull the property in with
+         the type — otherwise the enum imports with no EnumStrings and the address model is incomplete. -->
+    <UADataType NodeId="ns=1;i=6020" BrowseName="1:MyEnum">
+        <References>
+            <Reference ReferenceType="i=45" IsForward="false">i=29</Reference>
+            <Reference ReferenceType="i=46">ns=1;i=6021</Reference>
+        </References>
+    </UADataType>
+
+    <UAVariable NodeId="ns=1;i=6021" BrowseName="EnumStrings" ParentNodeId="ns=1;i=6020"
+                DataType="i=21" ValueRank="1">
+        <References>
+            <Reference ReferenceType="i=40">i=68</Reference>
+            <Reference ReferenceType="i=46" IsForward="false">ns=1;i=6020</Reference>
+        </References>
+        <Value>
+            <uax:ListOfLocalizedText>
+                <uax:LocalizedText><uax:Text>Red</uax:Text></uax:LocalizedText>
+                <uax:LocalizedText><uax:Text>Green</uax:Text></uax:LocalizedText>
+            </uax:ListOfLocalizedText>
+        </Value>
+    </UAVariable>
+
+    <!-- A structure DataType (subtype of Structure i=22) with a Default Binary encoding object. The
+         encoding object (i=6031) has NO ParentNodeId and is the inverse-HasEncoding target of the
+         DataType plus a HasTypeDefinition to DataTypeEncodingType (i=76) — the NS0 shape of
+         ServerStatusDataType (i=862) / Default Binary (i=864). The TypeDefinitionsOnly import must
+         pull the encoding object in so the DataType gains its HasEncoding reference. -->
+    <UADataType NodeId="ns=1;i=6030" BrowseName="1:MyStruct">
+        <References>
+            <Reference ReferenceType="i=45" IsForward="false">i=22</Reference>
+        </References>
+    </UADataType>
+
+    <UAObject NodeId="ns=1;i=6031" BrowseName="Default Binary" SymbolicName="DefaultBinary">
+        <References>
+            <Reference ReferenceType="i=38" IsForward="false">ns=1;i=6030</Reference>
+            <Reference ReferenceType="i=40">i=76</Reference>
+        </References>
+    </UAObject>
+</UANodeSet>

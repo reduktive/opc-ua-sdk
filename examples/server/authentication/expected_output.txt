@@ -1,0 +1,12 @@
+=== server/authentication ===
+Accept three kinds of user identity, and give each one different rights.
+
+  1. Opened the development PKI
+  2. Accepting anonymous, username/password, and X.509 user identities
+  3. Observer may read Demo/Setpoint; Operator may also write it
+  4. Listening, one Basic256Sha256 SignAndEncrypt endpoint
+     opc.tcp://127.0.0.1:<port>
+     Run example_client_authentication in another terminal. Press Ctrl+C to stop.
+  5. Stopped on Ctrl+C
+
+OK  server/authentication

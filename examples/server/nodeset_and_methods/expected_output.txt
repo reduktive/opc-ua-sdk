@@ -1,0 +1,13 @@
+=== server/nodeset_and_methods ===
+Import a model from a file, then give it behaviour.
+
+  1. Created the server
+  2. Imported Pump.NodeSet2.xml into namespace index 2
+  3. Bound Speed = 1450 and the Stop handler
+  4. Listening, one Basic256Sha256 SignAndEncrypt endpoint
+     opc.tcp://127.0.0.1:<port>
+     Model: Pump with Speed (Double, read/write) and Stop().
+     Press Ctrl+C to stop.
+  5. Stopped on Ctrl+C
+
+OK  server/nodeset_and_methods

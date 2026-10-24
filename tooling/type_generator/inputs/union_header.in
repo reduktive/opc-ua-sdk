@@ -1,0 +1,147 @@
+#ifndef PLACEHOLDER_HEADER_GUARD
+#define PLACEHOLDER_HEADER_GUARD
+
+#include "ua_includes.h"
+PLACEHOLDER_SPEC_INCLUDES
+#include "ua_union.h"
+#include "ua_node_id.h"
+#include "ua_built_in_type_id.h"
+#include "ua_ref_structure.h"
+PLACEHOLDER_FIELD_INCLUDES
+
+PLACEHOLDER_NS_OPEN
+
+PLACEHOLDER_STRUCTURE_FACTORY_FWD
+
+PLACEHOLDER_DOC
+class PLACEHOLDER_CLASS_NAME : public Union
+{
+public:
+  /// The unqualified OPC UA type name.
+  static constexpr string_view typeName{"PLACEHOLDER_CLASS_NAME"};
+  /// The namespace URI that owns this type.
+  static constexpr string_view typeNamespaceUri = specNamespaceUri;
+  /// The type's well-known `DataTypeId`.
+  static constexpr DataTypeId typeId{DataTypeId::PLACEHOLDER_CLASS_NAME};
+
+  /// The Default Binary encoding's `ObjectId`.
+  static const ObjectId defaultBinaryEncodingId{ObjectId::PLACEHOLDER_CLASS_NAME_Encoding_DefaultBinary};
+  /// The Default XML encoding's `ObjectId`.
+  static const ObjectId defaultXmlEncodingId{ObjectId::PLACEHOLDER_CLASS_NAME_Encoding_DefaultXml};
+
+  /// Field selector - mirrors the wire switch value.
+  enum class Field : uint32_t
+  {
+    None = 0,
+PLACEHOLDER_FIELD_ENUM_VALUES
+  };
+
+  /// Constructs an empty `PLACEHOLDER_CLASS_NAME` with no field selected.
+  PLACEHOLDER_CLASS_NAME() = default;
+  /// Defaulted copy: `PLACEHOLDER_CLASS_NAME` is a value type (memberwise copy).
+  /// @param other The value to copy from.
+  PLACEHOLDER_CLASS_NAME(const PLACEHOLDER_CLASS_NAME& other) = default;
+  /// Defaulted move.
+  /// @param other The value to move from.
+  PLACEHOLDER_CLASS_NAME(PLACEHOLDER_CLASS_NAME&& other) noexcept = default;
+  /// Defaulted memberwise copy assignment.
+  /// @param other The value to copy from.
+  /// @return A reference to this value.
+  PLACEHOLDER_CLASS_NAME& operator=(const PLACEHOLDER_CLASS_NAME& other) = default;
+  /// Defaulted memberwise move assignment.
+  /// @param other The value to move from.
+  /// @return A reference to this value.
+  PLACEHOLDER_CLASS_NAME& operator=(PLACEHOLDER_CLASS_NAME&& other) noexcept = default;
+  /// Defaulted destructor (completes the rule of five; `override` because the polymorphic base
+  /// `Union`/`Structure` has a virtual destructor). Satisfies cppcoreguidelines-special-member-functions.
+  ~PLACEHOLDER_CLASS_NAME() override = default;
+
+  /// Equality is memberwise: two values are equal iff the same field is active and the values match.
+  /// @param obj The value to compare against.
+  /// @return `true` if the same field is active and its value is equal.
+  bool operator==(const PLACEHOLDER_CLASS_NAME& obj) const = default;
+
+  // --- Union interface ---
+  /// @return The active field's wire switch value, or 0 when no field is set.
+  uint32_t switch_field() const override;
+  /// @return The number of selectable fields in this union.
+  uint32_t field_count() const override;
+  /// Clears the union, leaving no active field.
+  void clear() override;
+
+  /// @return The typed selector for the currently active field.
+  Field active_field() const;
+
+  // --- Field accessors ---
+PLACEHOLDER_FIELD_ACCESSORS
+
+  // --- Structure interface ---
+  /// Tests whether this value's type matches `dataTypeId` or one of its supertypes.
+  /// @param ns     Namespace context used to resolve `dataTypeId`.
+  /// @param dataTypeId Candidate type identifier.
+  /// @return `true` if this value is of type `dataTypeId` or a subtype of it.
+  bool is_of_type(const CodecNamespaceContext& ns, const NodeId& dataTypeId) const override;
+
+  /// @return The type's `ExpandedNodeId`.
+  ExpandedNodeId type_id() const override;
+
+  /// Resolves the type's `NodeId` in a namespace context.
+  /// @param ns Namespace context supplying the runtime namespace index.
+  /// @return The type's `NodeId`.
+  NodeId type_id(const CodecNamespaceContext& ns) const override;
+
+  /// @return The unqualified OPC UA type name.
+  String type_name() const override;
+
+  /// Encodes the type's encoding id.
+  /// @param limit   Remaining stack-depth budget guarding against deep nesting.
+  /// @param ns      Namespace context used to resolve the encoding id.
+  /// @param encoder Sink the encoding id is written to.
+  void encode_id(
+    StackDepth limit, const CodecNamespaceContext& ns, Encoder& encoder) const override;
+
+  /// Encodes the active field.
+  /// @param limit   Remaining stack-depth budget guarding against deep nesting.
+  /// @param encoder Sink the active field is written to.
+  void encode(StackDepth limit, Encoder& encoder) const override;
+
+  /// Decodes the active field, replacing the current contents.
+  /// @param limit   Remaining stack-depth budget guarding against deep nesting.
+  /// @param decoder Source the active field is read from.
+  void decode(StackDepth limit, Decoder& decoder) override;
+PLACEHOLDER_RESOLVE_DECLARATION
+
+  /// Polymorphically deep-copies this value.
+  /// @return A heap-allocated copy held by its `Structure` base.
+  unique_ptr<Structure> clone() const override;
+
+  /// Formats this value as human-readable text, for logging and debugging.
+  /// @param indent Indentation depth applied to nested structures.
+  /// @return The formatted representation.
+  std::string to_string(int indent = 0) const override;
+
+  /// Registers this type's decode factories so encoded values can be
+  /// reconstructed by their encoding id.
+  /// @param ns              Namespace context the encoding ids are registered under.
+  /// @param uaBinaryFactory Binary-codec factory to register with, or null to skip.
+  /// @param xmlFactory      XML-codec factory to register with, or null to skip.
+  static void register_type(const CodecNamespaceContext& ns,
+    StructureFactory* uaBinaryFactory, StructureFactory* xmlFactory);
+
+  /// @return The `BuiltInTypeId` this type encodes as on the wire.
+  static BuiltInTypeId built_in_type_id();
+
+protected:
+  /// Appends the active field to a buffer; used by to_string().
+  /// @param[in,out] output Buffer the field line is appended to.
+  /// @param indent         Indentation depth applied to nested structures.
+  void append_fields(std::string& output, int indent = 0) const override;
+
+private:
+  Field mActiveField{Field::None};
+PLACEHOLDER_FIELD_MEMBERS
+};
+
+PLACEHOLDER_GET_TYPENAME_BLOCK
+
+#endif // !PLACEHOLDER_HEADER_GUARD

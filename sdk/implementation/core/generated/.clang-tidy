@@ -1,0 +1,13 @@
+# Generated code is exempt from readability-identifier-naming (issue #006b, approach B).
+#
+# The emitted identifiers follow the OPC UA Foundation NodeId / BrowseName convention: the
+# scoped-enum identifier tables (e.g. AcknowledgeableConditionType_AckedState_Id) and the
+# BrowseName-derived struct field / enum-value names are the ecosystem-canonical spec names,
+# shared with NodeIds.csv, open62541, and the .NET stack. Forcing CamelCase on them would
+# diverge from the specification and lose the browse-path structure. This is a documented
+# exemption, NOT a silent per-line NOLINT: the type generator is responsible for the naming
+# conformance of any non-spec-derived identifier it invents (locals, helper constants).
+#
+# All OTHER static-analysis checks still apply to generated code (SAST Phase 2 gates it).
+InheritParentConfig: true
+Checks: '-readability-identifier-naming'

@@ -1,0 +1,13 @@
+=== client/push_certificates ===
+Manage a server's certificates over OPC UA.
+
+  1. Client ready, server at opc.tcp://127.0.0.1:<port>
+  2. 'operator' called GetRejectedList: BadUserAccessDenied (0x801F0000)
+     Authenticated, and still refused. Certificate management needs SecurityAdmin.
+  3. 'security-admin' called GetRejectedList: 0 certificate(s) rejected so far
+  4. Read the TrustList as a file: <masked> of TrustListDataType
+     Rotating the server's own certificate is the other half: CreateSigningRequest,
+     then UpdateCertificate and ApplyChanges once your CA has signed it.
+  5. Closed both Sessions and stopped the client
+
+OK  client/push_certificates

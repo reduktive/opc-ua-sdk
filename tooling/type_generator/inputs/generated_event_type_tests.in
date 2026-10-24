@@ -1,0 +1,13 @@
+#include <gtest/gtest.h>
+
+#include "ua_base_event.h"
+#include "ua_objecttype_id.h"
+#include "ua_qualified_name.h"
+#include "ua_variant.h"
+#include "ua_data_value.h"
+
+PLACEHOLDER_INCLUDES
+
+using namespace ua;
+
+PLACEHOLDER_TEST_CASES

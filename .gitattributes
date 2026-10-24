@@ -1,0 +1,7 @@
+# Mark auto-generated type files so they collapse in diffs by default.
+# The generated tree is layered: wire/type
+# categories under core/, instance-handle categories + ns0 under address_space/.
+sdk/interface/core/generated/ua/** linguist-generated=true
+sdk/implementation/core/generated/ua/** linguist-generated=true
+sdk/interface/address_space/generated/ua/** linguist-generated=true
+sdk/implementation/address_space/generated/ua/** linguist-generated=true

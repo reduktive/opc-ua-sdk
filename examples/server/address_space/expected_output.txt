@@ -1,0 +1,12 @@
+=== server/address_space ===
+A server whose information model is built node by node in code.
+
+  1. Opened the development PKI
+  2. Created the server
+  3. Built Plant/Boiler with two Variables and one Method
+  4. Listening, one Basic256Sha256 SignAndEncrypt endpoint
+     opc.tcp://127.0.0.1:<port>
+     Run example_client_browse_and_call in another terminal. Press Ctrl+C to stop.
+  5. Stopped on Ctrl+C
+
+OK  server/address_space

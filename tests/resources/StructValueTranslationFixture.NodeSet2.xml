@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UANodeSet xmlns="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:uax="http://opcfoundation.org/UA/2008/02/Types.xsd">
+    <NamespaceUris>
+        <Uri>urn:example:custom</Uri>
+    </NamespaceUris>
+
+    <UADataType NodeId="ns=1;i=6001" BrowseName="1:MyDataType"/>
+
+    <!-- Variable whose Value is a structure (Argument). The structure's DataType
+         field is a NodeId in the file-local custom namespace (ns=1). The old
+         post-decode translate_variant walk could not reach ids nested inside
+         structure fields, so this embedded id stayed file-local. Translate-at-source
+         translates it as it is decoded. -->
+    <UAVariable NodeId="ns=1;i=5003" BrowseName="1:StructVar" DataType="i=296">
+        <Value>
+            <uax:ExtensionObject>
+                <uax:TypeId><uax:Identifier>i=297</uax:Identifier></uax:TypeId>
+                <uax:Body>
+                    <uax:Argument>
+                        <uax:Name>EmbeddedField</uax:Name>
+                        <uax:DataType><uax:Identifier>ns=1;i=6001</uax:Identifier></uax:DataType>
+                        <uax:ValueRank>0</uax:ValueRank>
+                    </uax:Argument>
+                </uax:Body>
+            </uax:ExtensionObject>
+        </Value>
+    </UAVariable>
+</UANodeSet>

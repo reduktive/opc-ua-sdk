@@ -1,0 +1,17 @@
+=== client/file_transfer ===
+List, read, and create files through OPC UA.
+
+  1. Connected to opc.tcp://127.0.0.1:<port> and resolved Documents
+  2. Directory holds: manual.txt
+  3. Read manual.txt in one call, 44 bytes
+     First line: Reduktive OPC UA SDK
+  4. Created and wrote reading.txt
+  5. Directory now holds: manual.txt, reading.txt
+  6. Created Manuals/ and a file inside it
+     Manuals holds: reading.txt
+  7. Read manual.txt a chunk at a time: 44 bytes
+     Seeked to byte 16 and read on:  SDK File transf
+  8. Deleted Manuals/, directory now holds: manual.txt, reading.txt
+  9. Closed the Session and stopped the client
+
+OK  client/file_transfer

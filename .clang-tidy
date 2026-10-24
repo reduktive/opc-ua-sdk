@@ -1,0 +1,84 @@
+Checks: '-*,
+readability-misleading-indentation,
+readability-non-const-parameter,
+readability-named-parameter,
+readability-function-size,
+readability-duplicate-include,
+readability-magic-numbers,
+readability-braces-around-statements,
+readability-make-member-function-const,
+readability-qualified-auto,
+readability-isolate-declaration,
+readability-avoid-unconditional-preprocessor-if,
+readability-function-cognitive-complexity,
+#readability-implicit-bool-conversion,
+readability-identifier-naming'
+FormatStyle: file
+CheckOptions:
+  - key: readability-identifier-naming.MacroDefinitionCase
+    value: 'UPPER_CASE'
+  - key: readability-identifier-naming.ClassCase
+    value: 'CamelCase'
+  - key: readability-identifier-naming.FunctionCase
+    value: 'lower_case'
+  - key: readability-identifier-naming.NamespaceCase
+    value: 'lower_case'
+  - key: readability-identifier-naming.ScopedEnumCase
+    value: 'CamelCase'
+  - key: readability-identifier-naming.ScopedEnumConstantCase
+    value: 'CamelCase'
+  - key: readability-identifier-naming.EnumCase
+    value: 'CamelCase'
+  - key: readability-identifier-naming.EnumConstantCase
+    value: 'CamelCase'
+  - key: readability-identifier-naming.UnionCase
+    value: 'CamelCase'
+  - key: readability-identifier-naming.TypeAliasCase
+    value: 'CamelCase'
+  - key: readability-identifier-naming.TypedefCase
+    value: 'CamelCase'
+  # A member type the standard library, a coroutine or GoogleMock looks up by name keeps that name.
+  - key: readability-identifier-naming.TypeAliasIgnoredRegexp
+    value: '^(value_type|size_type|difference_type|reference|const_reference|pointer|const_pointer|iterator|const_iterator|reverse_iterator|const_reverse_iterator|element_type|key_type|mapped_type|allocator_type|hasher|key_equal|is_transparent|iterator_category|iterator_concept|result_type|executor_type|type|promise_type|is_gtest_matcher)$'
+  - key: readability-identifier-naming.ClassIgnoredRegexp
+    value: '^(promise_type|iterator|const_iterator|is_[a-z0-9_]+)$'
+  # A trait keeps the standard library's form (D-19): `is_nullable_callback`, `is_nullable_callback_v`,
+  # `Callback::fits_inline_v` (a member variable template, which clang-tidy does not check). An alias
+  # that only re-exports a library name is removed, not excepted.
+  - key: readability-identifier-naming.GlobalConstantIgnoredRegexp
+    value: '^(is_[a-z0-9_]+|[a-z][a-z0-9_]*_v)$'
+  # GoogleTest, GoogleMock and libFuzzer find these by name; then the tests' own MATCHER()s, spelled like
+  # GoogleMock's matchers they are written beside (cpp_style.md section Naming).
+  - key: readability-identifier-naming.FunctionIgnoredRegexp
+    value: '^(SetUpTestSuite|TearDownTestSuite|SetUpTestCase|TearDownTestCase|MatchAndExplain|DescribeTo|DescribeNegationTo|PrintTo|LLVMFuzzerTestOneInput|Good|Bad|HasStatus|HasStatusPresent|ServiceResultIs|ServiceResultIsGood|WriteFailsWith|WriteSucceeds|ContainsDataChangeFor|EventFieldWith|MonitoredItemNotificationWith|NotificationPresent)$'
+  # -- Variables (cpp_style.md section Naming). A prefix states access (m, s) or mutable global state
+  #    (g), never constness: a constant is named exactly like a variable in the same position, so no
+  #    *Constant* kind is given a style of its own and each falls through to its variable kind.
+  - key: readability-identifier-naming.LocalVariableCase
+    value: 'camelBack'
+  - key: readability-identifier-naming.ParameterCase
+    value: 'camelBack'
+  # Instance data members: public read like locals (no prefix); private and protected carry 'm'.
+  - key: readability-identifier-naming.PublicMemberCase
+    value: 'camelBack'
+  - key: readability-identifier-naming.PrivateMemberCase
+    value: 'CamelCase'
+  - key: readability-identifier-naming.PrivateMemberPrefix
+    value: 'm'
+  - key: readability-identifier-naming.ProtectedMemberCase
+    value: 'CamelCase'
+  - key: readability-identifier-naming.ProtectedMemberPrefix
+    value: 'm'
+  # Static data members: public ones are camelBack with no prefix, private and protected ones are 's'
+  # + CamelCase. clang-tidy has no access split for static members, and 'sOpenCount' is also
+  # camelBack, so this checks the case only; a separate naming check covers the prefix.
+  - key: readability-identifier-naming.ClassMemberCase
+    value: 'camelBack'
+  # Mutable globals carry 'g': the prefix makes mutable global state visible.
+  - key: readability-identifier-naming.GlobalVariableCase
+    value: 'CamelCase'
+  - key: readability-identifier-naming.GlobalVariablePrefix
+    value: 'g'
+  # A namespace-scope or file-scope constant is not mutable state: camelBack, no prefix.
+  - key: readability-identifier-naming.GlobalConstantCase
+    value: 'camelBack'

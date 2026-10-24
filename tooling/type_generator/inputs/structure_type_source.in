@@ -1,0 +1,14 @@
+#include "ua_structure_factory.h"
+#include "ua_binary_codec.h"
+#include "ua_xml_codec.h"
+#include "ua_uri_array.h"
+#include "ua_to_string.h"
+#include "ua_utilities.h"
+
+PLACEHOLDER_INCLUDES
+
+PLACEHOLDER_NS_OPEN
+
+PLACEHOLDER_SOURCE_CODE
+
+PLACEHOLDER_NS_CLOSE

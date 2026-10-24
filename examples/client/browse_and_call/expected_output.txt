@@ -1,0 +1,14 @@
+=== client/browse_and_call ===
+Discover a server's model, then call a Method on it.
+
+  1. Connected to opc.tcp://127.0.0.1:<port>
+  2. Resolved urn:reduktive:opcua-sdk:example:plant to namespace index 2
+  3. Browsed the Objects folder for this server's own model
+     Plant contains: Boiler (Object)
+  4. Translated Plant/Boiler to the NodeId this server chose
+     Boiler contains: Temperature (Variable), Setpoint (Variable), Scale (Method)
+  5. Translated the Method's path the same way
+  6. Called Scale(1.25), new Setpoint = 100
+  7. Closed the Session and stopped the client
+
+OK  client/browse_and_call

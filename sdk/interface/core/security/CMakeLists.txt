@@ -1,0 +1,10 @@
+# SPDX-License-Identifier: LicenseRef-Reduktive-Source-Available-1.0
+# Copyright (c) 2026 Reduktive Limited. All rights reserved.
+
+target_sources(uasdk-core PUBLIC ua_crypto.h ua_crypto_types.h ua_x509_certificate.h
+        ua_x509_crl.h ua_certificate_store.h ua_certificate_store_files.h ua_secure_string.h
+        ua_access_identity_facts.h
+)
+
+target_include_directories(uasdk-core PUBLIC .)
+

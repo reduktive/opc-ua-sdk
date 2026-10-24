@@ -1,0 +1,67 @@
+# SPDX-License-Identifier: LicenseRef-Reduktive-Source-Available-1.0
+# Copyright (c) 2026 Reduktive Limited. All rights reserved.
+
+target_sources(uasdk-address-space PRIVATE
+        ua_role_permissions.h
+        ua_address_space.cpp
+        ua_event_graph_check.h
+        ua_event_graph_check.cpp
+        ua_address_space_impl.h
+        ua_address_space_change_events.h
+        ua_session_resource_registry.cpp
+        ua_session_resource_registry.h
+        ua_file_handle_budget.cpp
+        ua_file_handle_budget.h
+        ua_namespace_registration_coordinator.cpp
+        ua_namespace_registration_coordinator.h
+        ua_namespace.cpp
+        ua_namespace_batch_support.h
+        ua_namespace_context.cpp
+        ua_namespace_context_state.h
+        ua_namespace_route.h
+        ua_monitoring_entry.h
+        ua_model_change_step.h
+        ua_model_change_step.cpp
+        ua_value_source.cpp
+        ua_whole_value_source.h
+        ua_namespace_items.cpp
+        ua_node_description.cpp
+        ua_described_nodes.cpp
+        ua_role_permissions.cpp
+        ua_namespace_array.cpp
+        ua_server_array.cpp
+        ua_node.cpp
+        ua_reference.cpp
+        ua_reference_identity.cpp
+        ua_reference_identity.h
+        ua_node_utilities.cpp
+        ua_node_accessor.cpp
+        ua_node_accessor_route.h
+        ua_node_accessor_route.cpp
+        ua_subtype_facts.h
+        ua_subtype_facts.cpp
+        ua_node_deletion.h
+        ua_node_deletion.cpp
+        ua_add_method.cpp
+        ua_attribute_wire.h
+        ua_attribute_wire.cpp
+        ua_instance_utils.cpp
+        ua_namespace_monitoring_support.cpp
+        ua_namespace_monitoring_support_access.h
+        ua_base_event.cpp
+        ua_generic_event.cpp
+        ua_address_space_model_access.cpp
+        ua_register_address_space_types.cpp
+        ua_monitoring_equality.h
+        ua_value_range_check.h
+        ua_method_call_authorization_internal.h
+)
+
+uasdk_private_include_directory(uasdk-address-space)
+add_subdirectory(helpers)
+add_subdirectory(implementations)
+add_subdirectory(nodeset_tools)
+add_subdirectory(instantiation)
+add_subdirectory(conditions)
+add_subdirectory(instance_types)
+add_subdirectory(generated)

@@ -1,0 +1,201 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 21,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+      }
+    },
+    {
+      "name": "system",
+      "hidden": true,
+      "generator": "Ninja",
+      "description": "Resolve dependencies from the system rather than from vcpkg. The SDK asks for Boost 1.83+ (CONFIG, with json), OpenSSL, fmt, and \u2014 unless UASDK_BUILD_HISTORY_SQLITE is OFF \u2014 SQLite3, all through plain find_package, so a distribution that provides their development packages needs no package manager. GTest is additionally required for a developer build that enables the tests. This is the preset a packager or a distribution-integrated build reaches for; the vcpkg presets are how the maintainers develop, and nothing about the SDK requires vcpkg."
+    },
+    {
+      "name": "gcc-debug",
+      "displayName": "GCC Debug",
+      "inherits": "base",
+      "binaryDir": "${sourceDir}/cmake-build-debug-gcc",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "gcc-release",
+      "displayName": "GCC Release",
+      "inherits": "base",
+      "binaryDir": "${sourceDir}/cmake-build-release-gcc",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "gcc-debug-system",
+      "inherits": "system",
+      "binaryDir": "${sourceDir}/cmake-build-debug-gcc-system",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_C_COMPILER": "gcc",
+        "CMAKE_CXX_COMPILER": "g++"
+      }
+    },
+    {
+      "name": "gcc-release-system",
+      "inherits": "system",
+      "binaryDir": "${sourceDir}/cmake-build-release-gcc-system",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_C_COMPILER": "gcc",
+        "CMAKE_CXX_COMPILER": "g++"
+      }
+    },
+    {
+      "name": "clang-debug",
+      "displayName": "Clang Debug",
+      "inherits": "base",
+      "binaryDir": "${sourceDir}/cmake-build-debug-clang",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_C_COMPILER": "/usr/bin/clang-19",
+        "CMAKE_CXX_COMPILER": "/usr/bin/clang++-19"
+      }
+    },
+    {
+      "name": "clang-release",
+      "displayName": "Clang Release",
+      "inherits": "base",
+      "binaryDir": "${sourceDir}/cmake-build-release-clang",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_C_COMPILER": "/usr/bin/clang-19",
+        "CMAKE_CXX_COMPILER": "/usr/bin/clang++-19"
+      }
+    },
+    {
+      "name": "gcc-relwithdebinfo",
+      "displayName": "GCC RelWithDebInfo",
+      "inherits": "base",
+      "binaryDir": "${sourceDir}/cmake-build-relwithdebinfo-gcc",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
+    },
+    {
+      "name": "clang-relwithdebinfo",
+      "displayName": "Clang RelWithDebInfo",
+      "inherits": "base",
+      "binaryDir": "${sourceDir}/cmake-build-relwithdebinfo-clang",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "CMAKE_C_COMPILER": "/usr/bin/clang-19",
+        "CMAKE_CXX_COMPILER": "/usr/bin/clang++-19"
+      }
+    },
+    {
+      "name": "gcc-asan",
+      "displayName": "GCC ASan/UBSan",
+      "inherits": "gcc-debug",
+      "binaryDir": "${sourceDir}/cmake-build-debug-gcc-asan",
+      "cacheVariables": {
+        "ENABLE_ASAN": "ON"
+      }
+    },
+    {
+      "name": "clang-asan",
+      "displayName": "Clang ASan/UBSan",
+      "inherits": "clang-debug",
+      "binaryDir": "${sourceDir}/cmake-build-debug-clang-asan",
+      "cacheVariables": {
+        "ENABLE_ASAN": "ON"
+      }
+    },
+    {
+      "name": "gcc-tsan",
+      "displayName": "GCC ThreadSanitizer",
+      "inherits": "gcc-debug",
+      "binaryDir": "${sourceDir}/cmake-build-debug-gcc-tsan",
+      "cacheVariables": {
+        "ENABLE_TSAN": "ON"
+      }
+    },
+    {
+      "name": "clang-tsan",
+      "displayName": "Clang ThreadSanitizer",
+      "inherits": "clang-debug",
+      "binaryDir": "${sourceDir}/cmake-build-debug-clang-tsan",
+      "cacheVariables": {
+        "ENABLE_TSAN": "ON"
+      }
+    },
+    {
+      "name": "gcc-32-debug",
+      "displayName": "GCC 32-bit Debug",
+      "inherits": "base",
+      "binaryDir": "${sourceDir}/cmake-build-debug-gcc-32",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "VCPKG_TARGET_TRIPLET": "x86-linux",
+        "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchains/linux-x86.cmake"
+      }
+    },
+    {
+      "name": "clang-32-debug",
+      "displayName": "Clang 32-bit Debug",
+      "inherits": "base",
+      "binaryDir": "${sourceDir}/cmake-build-debug-clang-32",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_C_COMPILER": "/usr/bin/clang-19",
+        "CMAKE_CXX_COMPILER": "/usr/bin/clang++-19",
+        "VCPKG_TARGET_TRIPLET": "x86-linux",
+        "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchains/linux-x86.cmake"
+      }
+    },
+    {
+      "name": "coverage",
+      "displayName": "GCC Coverage",
+      "inherits": "gcc-debug",
+      "binaryDir": "${sourceDir}/cmake-build-coverage",
+      "cacheVariables": {
+        "ENABLE_CODE_COVERAGE": "ON"
+      }
+    },
+    {
+      "name": "win-debug",
+      "displayName": "Windows MSVC Debug",
+      "inherits": "base",
+      "binaryDir": "${sourceDir}/cmake-build-debug-win",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
+      "name": "win-relwithdebinfo",
+      "displayName": "Windows MSVC RelWithDebInfo",
+      "inherits": "base",
+      "binaryDir": "${sourceDir}/cmake-build-relwithdebinfo-win",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    }
+  ]
+}

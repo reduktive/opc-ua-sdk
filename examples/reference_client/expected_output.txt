@@ -1,0 +1,29 @@
+=== reference_client ===
+A production-shaped OPC UA client application.
+
+  1. Opened the persistent PKI
+     Client certificate SHA-256: <fingerprint>
+  2. Connected securely to opc.tcp://127.0.0.1:<port>
+  3. Resolved the demo model by namespace URI and BrowseName
+  4. Browsed the Demo object
+     Demo contains: Divide, Setpoint, UptimeSeconds
+  5. Read a Variable
+     <masked>
+  6. Wrote a Variable and read it back
+     Setpoint written, read back = 37.5
+  7. Subscribed to a Variable
+     Data-change notification reported 61.25
+  8. Called a Method
+     Divide(84, 2) = 42
+  9. Called a Method the server rejects
+     Divide(84, 0) rejected: BadInvalidArgument (0x80AB0000)
+     Server detail: [client.tier2.typed_access.call_method] CallMethodBadPerMethodStatus: the server returned a bad per-method Call status; the per-input-argument results identify the rejected argument (BadInvalidArgument (0x80AB0000))
+  caused by: [client.tier0.session.decode_diagnostic] server diagnostics decoded at the wire boundary (BadInvalidArgument (0x80AB0000))
+    operation.index = 0
+    caused by: [server.unknown.reference_server.demo.divide] server.symbolic.ReferenceDivideByZero: Divide rejected the request because the divisor was zero
+      node.id = <nodeid>
+      value = 0
+      error.message = Supply a non-zero divisor
+  10. Closed the Session and stopped the client
+
+OK  reference_client

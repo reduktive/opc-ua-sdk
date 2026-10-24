@@ -1,0 +1,12 @@
+=== server/push_certificates ===
+Let one named administrator manage this server's certificates.
+
+  1. Opened the PKI that the push service will manage
+  2. SecurityAdmin granted to 'security-admin', Operator to 'operator'
+     The push Methods under ServerConfiguration are live; nothing switches them on.
+  3. Listening, one Basic256Sha256 SignAndEncrypt endpoint, username tokens only
+     opc.tcp://127.0.0.1:<port>
+     Run example_client_push_certificates in another terminal. Press Ctrl+C to stop.
+  4. Stopped on Ctrl+C
+
+OK  server/push_certificates

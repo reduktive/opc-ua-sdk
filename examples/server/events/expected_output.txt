@@ -1,0 +1,11 @@
+=== server/events ===
+Raise an event when something happens in the model.
+
+  1. Created the server
+  2. Published Tank with Level and Fill, high threshold 90
+  3. Listening, one Basic256Sha256 SignAndEncrypt endpoint
+     opc.tcp://127.0.0.1:<port>
+     Run example_client_events in another terminal. Press Ctrl+C to stop.
+  4. Stopped on Ctrl+C
+
+OK  server/events

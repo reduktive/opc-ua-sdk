@@ -1,0 +1,12 @@
+=== client/authentication ===
+The same node, three credentials, three outcomes.
+
+  1. Client ready, server at opc.tcp://127.0.0.1:<port>
+  2. Anonymous Session read Setpoint = 25
+  3. Anonymous Session write refused: BadUserAccessDenied (0x801F0000)
+     The node is writable. The Observer Role this Session holds is not.
+  4. Session as 'operator' wrote Setpoint = 30
+  5. Session holding an X.509 user certificate wrote Setpoint = 35
+  6. Closed all three Sessions and stopped the client
+
+OK  client/authentication

@@ -1,0 +1,26 @@
+{
+  "$comment": "Downstream vcpkg consumer manifest for the vcpkg overlay-port consume gate. Depends on the uasdk overlay port with the sqlite-store feature; the builtin-baseline + overrides are kept identical to the root vcpkg.json so the port's transitive deps (Boost/fmt/OpenSSL/SQLite3) resolve to the same pinned versions as the SDK's own build and the Conan channel. Bump in lockstep with /vcpkg.json and conanfile.py.",
+  "name": "uasdk-vcpkg-consume-smoke",
+  "version-string": "1.0.0",
+  "dependencies": [
+    {
+      "name": "uasdk",
+      "features": [
+        "sqlite-store"
+      ]
+    }
+  ],
+  "builtin-baseline": "f3e9932e75d4029034ae5015e97867e7a4aaa138",
+  "overrides": [
+    { "name": "boost-container-hash", "version": "1.88.0" },
+    { "name": "boost-uuid", "version": "1.88.0" },
+    { "name": "boost-flyweight", "version": "1.88.0" },
+    { "name": "boost-endian", "version": "1.88.0" },
+    { "name": "boost-asio", "version": "1.88.0" },
+    { "name": "boost-range", "version": "1.88.0" },
+    { "name": "boost-program-options", "version": "1.88.0" },
+    { "name": "boost-json", "version": "1.88.0" },
+    { "name": "fmt", "version": "10.2.1" },
+    { "name": "openssl", "version": "3.5.9" }
+  ]
+}

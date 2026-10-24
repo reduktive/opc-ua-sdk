@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UANodeSet xmlns="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:uax="http://opcfoundation.org/UA/2008/02/Types.xsd">
+    <NamespaceUris>
+        <Uri>urn:example:roles</Uri>
+    </NamespaceUris>
+
+    <!-- A custom role declared in the file-local namespace (ns=1). -->
+    <UAObject NodeId="ns=1;i=100" BrowseName="1:CustomRole"/>
+
+    <!-- A node guarded by RolePermissions referencing a custom-namespace role
+         (ns=1;i=100, must be translated to the server index), a well-known NS0
+         role (ns=0;i=15656 WellKnownRole_ConfigureAdmin, must be a no-op), and
+         WellKnownRole_SecurityAdmin (ns=0;i=15704) granted Browse+ReadRolePermissions+Read
+         (mask 35) so an admin session can read this node's RolePermissions Attribute
+         over the wire in the integration mirror. -->
+    <UAObject NodeId="ns=1;i=5001" BrowseName="1:GuardedObject">
+        <RolePermissions>
+            <RolePermission Permissions="1">ns=1;i=100</RolePermission>
+            <RolePermission Permissions="1">i=15656</RolePermission>
+            <RolePermission Permissions="35">i=15704</RolePermission>
+        </RolePermissions>
+    </UAObject>
+</UANodeSet>

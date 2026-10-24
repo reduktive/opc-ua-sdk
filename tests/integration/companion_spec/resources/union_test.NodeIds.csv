@@ -1,0 +1,3 @@
+TestUnion,3001,DataType
+TestUnion_Encoding_DefaultBinary,5001,Object
+TestUnion_Encoding_DefaultXml,5002,Object

@@ -1,0 +1,518 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Test NodeSet for dynamic type integration tests.
+
+  Namespace: urn:test:industrial-monitoring (ns=1)
+  Depends on: OPC UA core (ns=0)
+
+  Type family exercises every dynamic type component:
+    - Plain structure (diverse built-in field types)
+    - Concrete nested structures (2-level and 3-level inline encoding)
+    - StructureWithOptionalFields (including optional nested structure field)
+    - Union (multiple alternatives)
+    - Structure containing a union field
+    - Enum (DynamicEnumView)
+    - UInteger-based OptionSet (DynamicOptionSetView)
+    - Structure-based OptionSet (DynamicOptionSet, subtype of OptionSet i=12755)
+    - Structure with enum and option set integer fields
+    - Array fields of built-in types (valueRank=1)
+    - Array fields of custom types (structure, enum) (valueRank=1)
+    - Capstone type combining all of the above
+-->
+<UANodeSet xmlns="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:uax="http://opcfoundation.org/UA/2008/02/Types.xsd">
+
+  <NamespaceUris>
+    <Uri>urn:test:industrial-monitoring</Uri>
+  </NamespaceUris>
+
+  <Models>
+    <Model ModelUri="urn:test:industrial-monitoring" Version="1.0.0" PublicationDate="2026-03-24T00:00:00Z">
+      <RequiredModel ModelUri="http://opcfoundation.org/UA/" Version="1.05.03" PublicationDate="2023-12-15T00:00:00Z" />
+    </Model>
+  </Models>
+
+  <Aliases>
+    <Alias Alias="Boolean">i=1</Alias>
+    <Alias Alias="Int32">i=6</Alias>
+    <Alias Alias="UInt32">i=7</Alias>
+    <Alias Alias="UInt64">i=9</Alias>
+    <Alias Alias="Double">i=11</Alias>
+    <Alias Alias="String">i=12</Alias>
+    <Alias Alias="DateTime">i=13</Alias>
+    <Alias Alias="ByteString">i=15</Alias>
+    <Alias Alias="StatusCode">i=19</Alias>
+    <Alias Alias="LocalizedText">i=21</Alias>
+    <Alias Alias="Structure">i=22</Alias>
+    <Alias Alias="Enumeration">i=29</Alias>
+    <Alias Alias="HasSubtype">i=45</Alias>
+    <Alias Alias="HasEncoding">i=38</Alias>
+    <Alias Alias="HasTypeDefinition">i=40</Alias>
+    <Alias Alias="HasDescription">i=39</Alias>
+    <Alias Alias="HasProperty">i=46</Alias>
+    <Alias Alias="Organizes">i=35</Alias>
+    <Alias Alias="DataTypeEncodingType">i=76</Alias>
+    <Alias Alias="OptionSet">i=12755</Alias>
+  </Aliases>
+
+  <!-- ====================================================================== -->
+  <!-- ENUMS                                                                  -->
+  <!-- ====================================================================== -->
+
+  <!-- Priority: Low=0, Medium=1, High=2, Critical=3 -->
+  <UADataType NodeId="ns=1;i=1001" BrowseName="1:Priority">
+    <DisplayName>Priority</DisplayName>
+    <Description>Task priority level</Description>
+    <References>
+      <Reference ReferenceType="HasSubtype" IsForward="false">Enumeration</Reference>
+    </References>
+    <Definition Name="1:Priority">
+      <Field Name="Low" Value="0" />
+      <Field Name="Medium" Value="1" />
+      <Field Name="High" Value="2" />
+      <Field Name="Critical" Value="3" />
+    </Definition>
+  </UADataType>
+
+  <!-- SensorState: Offline=0, Initializing=1, Running=2, Error=3, Maintenance=4 -->
+  <UADataType NodeId="ns=1;i=1002" BrowseName="1:SensorState">
+    <DisplayName>SensorState</DisplayName>
+    <Description>Operational state of a sensor</Description>
+    <References>
+      <Reference ReferenceType="HasSubtype" IsForward="false">Enumeration</Reference>
+    </References>
+    <Definition Name="1:SensorState">
+      <Field Name="Offline" Value="0" />
+      <Field Name="Initializing" Value="1" />
+      <Field Name="Running" Value="2" />
+      <Field Name="Error" Value="3" />
+      <Field Name="Maintenance" Value="4" />
+    </Definition>
+  </UADataType>
+
+  <!-- ====================================================================== -->
+  <!-- OPTION SETS                                                            -->
+  <!-- ====================================================================== -->
+
+  <!-- AccessFlags: UInteger-based OptionSet (subtype of UInt32) -->
+  <UADataType NodeId="ns=1;i=1010" BrowseName="1:AccessFlags">
+    <DisplayName>AccessFlags</DisplayName>
+    <Description>Bitmask of access permissions</Description>
+    <References>
+      <Reference ReferenceType="HasSubtype" IsForward="false">UInt32</Reference>
+      <Reference ReferenceType="HasProperty">ns=1;i=6901</Reference>
+    </References>
+    <Definition Name="1:AccessFlags" IsOptionSet="true">
+      <Field Name="CanRead" Value="0" />
+      <Field Name="CanWrite" Value="1" />
+      <Field Name="CanDelete" Value="2" />
+      <Field Name="CanBrowse" Value="3" />
+      <Field Name="CanSubscribe" Value="4" />
+    </Definition>
+  </UADataType>
+
+  <!-- AccessFlags OptionSetValues property -->
+  <UAVariable NodeId="ns=1;i=6901" BrowseName="OptionSetValues" ParentNodeId="ns=1;i=1010"
+              DataType="LocalizedText" ValueRank="1" ArrayDimensions="5">
+    <DisplayName>OptionSetValues</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=1010</Reference>
+    </References>
+    <Value>
+      <uax:ListOfLocalizedText>
+        <uax:LocalizedText><uax:Text>CanRead</uax:Text></uax:LocalizedText>
+        <uax:LocalizedText><uax:Text>CanWrite</uax:Text></uax:LocalizedText>
+        <uax:LocalizedText><uax:Text>CanDelete</uax:Text></uax:LocalizedText>
+        <uax:LocalizedText><uax:Text>CanBrowse</uax:Text></uax:LocalizedText>
+        <uax:LocalizedText><uax:Text>CanSubscribe</uax:Text></uax:LocalizedText>
+      </uax:ListOfLocalizedText>
+    </Value>
+  </UAVariable>
+
+  <!-- PhysicalInterface: Structure-based OptionSet (subtype of OptionSet i=12755) -->
+  <!-- Models which physical interfaces a device supports. 10 named bits.         -->
+  <!-- Exercises ValidBits semantics and DynamicOptionSet encoding.                -->
+  <UADataType NodeId="ns=1;i=1020" BrowseName="1:PhysicalInterface">
+    <DisplayName>PhysicalInterface</DisplayName>
+    <Description>Bitmask of supported physical interfaces</Description>
+    <References>
+      <Reference ReferenceType="HasSubtype" IsForward="false">OptionSet</Reference>
+      <Reference ReferenceType="HasEncoding">ns=1;i=5020</Reference>
+      <Reference ReferenceType="HasEncoding">ns=1;i=5021</Reference>
+      <Reference ReferenceType="HasProperty">ns=1;i=6902</Reference>
+    </References>
+    <Definition Name="1:PhysicalInterface" IsOptionSet="true">
+      <Field Name="Ethernet" Value="0" />
+      <Field Name="WiFi" Value="1" />
+      <Field Name="Bluetooth" Value="2" />
+      <Field Name="USB" Value="3" />
+      <Field Name="RS232" Value="4" />
+      <Field Name="RS485" Value="5" />
+      <Field Name="CAN" Value="6" />
+      <Field Name="PROFINET" Value="7" />
+      <Field Name="EtherCAT" Value="8" />
+      <Field Name="Modbus" Value="9" />
+    </Definition>
+  </UADataType>
+
+  <!-- PhysicalInterface Default Binary encoding node -->
+  <UAObject NodeId="ns=1;i=5020" BrowseName="Default Binary" SymbolicName="DefaultBinary">
+    <DisplayName>Default Binary</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">DataTypeEncodingType</Reference>
+      <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=1020</Reference>
+    </References>
+  </UAObject>
+
+  <!-- PhysicalInterface Default XML encoding node -->
+  <UAObject NodeId="ns=1;i=5021" BrowseName="Default XML" SymbolicName="DefaultXml">
+    <DisplayName>Default XML</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">DataTypeEncodingType</Reference>
+      <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=1020</Reference>
+    </References>
+  </UAObject>
+
+  <!-- PhysicalInterface OptionSetValues property -->
+  <UAVariable NodeId="ns=1;i=6902" BrowseName="OptionSetValues" ParentNodeId="ns=1;i=1020"
+              DataType="LocalizedText" ValueRank="1" ArrayDimensions="10">
+    <DisplayName>OptionSetValues</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=1020</Reference>
+    </References>
+    <Value>
+      <uax:ListOfLocalizedText>
+        <uax:LocalizedText><uax:Text>Ethernet</uax:Text></uax:LocalizedText>
+        <uax:LocalizedText><uax:Text>WiFi</uax:Text></uax:LocalizedText>
+        <uax:LocalizedText><uax:Text>Bluetooth</uax:Text></uax:LocalizedText>
+        <uax:LocalizedText><uax:Text>USB</uax:Text></uax:LocalizedText>
+        <uax:LocalizedText><uax:Text>RS232</uax:Text></uax:LocalizedText>
+        <uax:LocalizedText><uax:Text>RS485</uax:Text></uax:LocalizedText>
+        <uax:LocalizedText><uax:Text>CAN</uax:Text></uax:LocalizedText>
+        <uax:LocalizedText><uax:Text>PROFINET</uax:Text></uax:LocalizedText>
+        <uax:LocalizedText><uax:Text>EtherCAT</uax:Text></uax:LocalizedText>
+        <uax:LocalizedText><uax:Text>Modbus</uax:Text></uax:LocalizedText>
+      </uax:ListOfLocalizedText>
+    </Value>
+  </UAVariable>
+
+  <!-- LargeOptionSet: Structure-based OptionSet with a bit > 64 to test the boundary -->
+  <UADataType NodeId="ns=1;i=1021" BrowseName="1:LargeOptionSet">
+    <DisplayName>LargeOptionSet</DisplayName>
+    <Description>OptionSet with bits exceeding 64-bit boundary</Description>
+    <References>
+      <Reference ReferenceType="HasSubtype" IsForward="false">OptionSet</Reference>
+      <Reference ReferenceType="HasEncoding">ns=1;i=5030</Reference>
+      <Reference ReferenceType="HasProperty">ns=1;i=6903</Reference>
+    </References>
+    <Definition Name="1:LargeOptionSet" IsOptionSet="true">
+      <Field Name="Bit0" Value="0" />
+      <Field Name="Bit1" Value="1" />
+      <Field Name="Bit31" Value="31" />
+      <Field Name="Bit32" Value="32" />
+      <Field Name="Bit63" Value="63" />
+      <Field Name="Bit64" Value="64" />
+      <Field Name="Bit65" Value="65" />
+      <Field Name="Bit100" Value="100" />
+    </Definition>
+  </UADataType>
+
+  <UAObject NodeId="ns=1;i=5030" BrowseName="Default Binary" SymbolicName="DefaultBinary">
+    <DisplayName>Default Binary</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">DataTypeEncodingType</Reference>
+      <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=1021</Reference>
+    </References>
+  </UAObject>
+
+  <UAVariable NodeId="ns=1;i=6903" BrowseName="OptionSetValues" ParentNodeId="ns=1;i=1021"
+              DataType="LocalizedText" ValueRank="1" ArrayDimensions="8">
+    <DisplayName>OptionSetValues</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+      <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=1021</Reference>
+    </References>
+  </UAVariable>
+
+  <!-- ====================================================================== -->
+  <!-- STRUCTURES                                                             -->
+  <!-- ====================================================================== -->
+
+  <!-- GeoCoordinate: simple structure, inner nesting target -->
+  <UADataType NodeId="ns=1;i=2001" BrowseName="1:GeoCoordinate">
+    <DisplayName>GeoCoordinate</DisplayName>
+    <Description>Geographic coordinate with latitude, longitude, and altitude</Description>
+    <References>
+      <Reference ReferenceType="HasSubtype" IsForward="false">Structure</Reference>
+      <Reference ReferenceType="HasEncoding">ns=1;i=5001</Reference>
+    </References>
+    <Definition Name="1:GeoCoordinate">
+      <Field Name="Latitude" DataType="Double" />
+      <Field Name="Longitude" DataType="Double" />
+      <Field Name="Altitude" DataType="Double" />
+    </Definition>
+  </UADataType>
+
+  <UAObject NodeId="ns=1;i=5001" BrowseName="Default Binary" SymbolicName="DefaultBinary">
+    <DisplayName>Default Binary</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">DataTypeEncodingType</Reference>
+      <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=2001</Reference>
+    </References>
+  </UAObject>
+
+  <!-- SensorReading: diverse built-in field types -->
+  <UADataType NodeId="ns=1;i=2002" BrowseName="1:SensorReading">
+    <DisplayName>SensorReading</DisplayName>
+    <Description>A single sensor measurement with metadata</Description>
+    <References>
+      <Reference ReferenceType="HasSubtype" IsForward="false">Structure</Reference>
+      <Reference ReferenceType="HasEncoding">ns=1;i=5002</Reference>
+    </References>
+    <Definition Name="1:SensorReading">
+      <Field Name="Timestamp" DataType="DateTime" />
+      <Field Name="Temperature" DataType="Double" />
+      <Field Name="Pressure" DataType="Double" />
+      <Field Name="SensorId" DataType="String" />
+      <Field Name="Quality" DataType="StatusCode" />
+    </Definition>
+  </UADataType>
+
+  <UAObject NodeId="ns=1;i=5002" BrowseName="Default Binary" SymbolicName="DefaultBinary">
+    <DisplayName>Default Binary</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">DataTypeEncodingType</Reference>
+      <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=2002</Reference>
+    </References>
+  </UAObject>
+
+  <!-- SensorLocation: concrete nested structure (contains GeoCoordinate inline) -->
+  <UADataType NodeId="ns=1;i=2003" BrowseName="1:SensorLocation">
+    <DisplayName>SensorLocation</DisplayName>
+    <Description>Named location with geographic coordinates</Description>
+    <References>
+      <Reference ReferenceType="HasSubtype" IsForward="false">Structure</Reference>
+      <Reference ReferenceType="HasEncoding">ns=1;i=5003</Reference>
+    </References>
+    <Definition Name="1:SensorLocation">
+      <Field Name="Name" DataType="String" />
+      <Field Name="Coordinate" DataType="ns=1;i=2001" />
+    </Definition>
+  </UADataType>
+
+  <UAObject NodeId="ns=1;i=5003" BrowseName="Default Binary" SymbolicName="DefaultBinary">
+    <DisplayName>Default Binary</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">DataTypeEncodingType</Reference>
+      <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=2003</Reference>
+    </References>
+  </UAObject>
+
+  <!-- DataBatch: structure with array fields (valueRank=1) -->
+  <UADataType NodeId="ns=1;i=2004" BrowseName="1:DataBatch">
+    <DisplayName>DataBatch</DisplayName>
+    <Description>Batch of sensor readings with parallel arrays</Description>
+    <References>
+      <Reference ReferenceType="HasSubtype" IsForward="false">Structure</Reference>
+      <Reference ReferenceType="HasEncoding">ns=1;i=5004</Reference>
+    </References>
+    <Definition Name="1:DataBatch">
+      <Field Name="BatchId" DataType="String" />
+      <Field Name="Values" DataType="Double" ValueRank="1" />
+      <Field Name="Timestamps" DataType="DateTime" ValueRank="1" />
+      <Field Name="Labels" DataType="String" ValueRank="1" />
+    </Definition>
+  </UADataType>
+
+  <UAObject NodeId="ns=1;i=5004" BrowseName="Default Binary" SymbolicName="DefaultBinary">
+    <DisplayName>Default Binary</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">DataTypeEncodingType</Reference>
+      <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=2004</Reference>
+    </References>
+  </UAObject>
+
+  <!-- SensorBatch: structure with arrays of custom types (valueRank=1) -->
+  <!-- Exercises array-of-nested-structure and array-of-enum codec paths -->
+  <UADataType NodeId="ns=1;i=2006" BrowseName="1:SensorBatch">
+    <DisplayName>SensorBatch</DisplayName>
+    <Description>Batch of sensor readings and locations as arrays of custom types</Description>
+    <References>
+      <Reference ReferenceType="HasSubtype" IsForward="false">Structure</Reference>
+      <Reference ReferenceType="HasEncoding">ns=1;i=5006</Reference>
+    </References>
+    <Definition Name="1:SensorBatch">
+      <Field Name="BatchId" DataType="String" />
+      <Field Name="Readings" DataType="ns=1;i=2002" ValueRank="1" />
+      <Field Name="Locations" DataType="ns=1;i=2001" ValueRank="1" />
+      <Field Name="States" DataType="ns=1;i=1002" ValueRank="1" />
+    </Definition>
+  </UADataType>
+
+  <UAObject NodeId="ns=1;i=5006" BrowseName="Default Binary" SymbolicName="DefaultBinary">
+    <DisplayName>Default Binary</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">DataTypeEncodingType</Reference>
+      <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=2006</Reference>
+    </References>
+  </UAObject>
+
+  <!-- AlertInfo: StructureWithOptionalFields -->
+  <!-- Includes an optional nested structure field (Location: SensorLocation) -->
+  <UADataType NodeId="ns=1;i=2005" BrowseName="1:AlertInfo">
+    <DisplayName>AlertInfo</DisplayName>
+    <Description>Alert with optional details and location</Description>
+    <References>
+      <Reference ReferenceType="HasSubtype" IsForward="false">Structure</Reference>
+      <Reference ReferenceType="HasEncoding">ns=1;i=5005</Reference>
+    </References>
+    <Definition Name="1:AlertInfo">
+      <Field Name="Message" DataType="String" />
+      <Field Name="Severity" DataType="UInt32" />
+      <Field Name="Details" DataType="String" IsOptional="true" />
+      <Field Name="Location" DataType="ns=1;i=2003" IsOptional="true" />
+      <Field Name="Acknowledged" DataType="Boolean" IsOptional="true" />
+    </Definition>
+  </UADataType>
+
+  <UAObject NodeId="ns=1;i=5005" BrowseName="Default Binary" SymbolicName="DefaultBinary">
+    <DisplayName>Default Binary</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">DataTypeEncodingType</Reference>
+      <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=2005</Reference>
+    </References>
+  </UAObject>
+
+  <!-- ====================================================================== -->
+  <!-- UNION                                                                  -->
+  <!-- ====================================================================== -->
+
+  <!-- Measurement: union with 4 alternatives -->
+  <UADataType NodeId="ns=1;i=3001" BrowseName="1:Measurement">
+    <DisplayName>Measurement</DisplayName>
+    <Description>A measurement value that can be integer, floating-point, text, or raw bytes</Description>
+    <References>
+      <Reference ReferenceType="HasSubtype" IsForward="false">Structure</Reference>
+      <Reference ReferenceType="HasEncoding">ns=1;i=5010</Reference>
+    </References>
+    <Definition Name="1:Measurement" IsUnion="true">
+      <Field Name="IntValue" DataType="Int32" />
+      <Field Name="FloatValue" DataType="Double" />
+      <Field Name="TextValue" DataType="String" />
+      <Field Name="RawValue" DataType="ByteString" />
+    </Definition>
+  </UADataType>
+
+  <UAObject NodeId="ns=1;i=5010" BrowseName="Default Binary" SymbolicName="DefaultBinary">
+    <DisplayName>Default Binary</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">DataTypeEncodingType</Reference>
+      <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=3001</Reference>
+    </References>
+  </UAObject>
+
+  <!-- ====================================================================== -->
+  <!-- COMPOSITE STRUCTURES (contain non-built-in fields)                     -->
+  <!-- ====================================================================== -->
+
+  <!-- MeasurementRecord: structure containing a union field -->
+  <UADataType NodeId="ns=1;i=2010" BrowseName="1:MeasurementRecord">
+    <DisplayName>MeasurementRecord</DisplayName>
+    <Description>A recorded measurement with source and timestamp</Description>
+    <References>
+      <Reference ReferenceType="HasSubtype" IsForward="false">Structure</Reference>
+      <Reference ReferenceType="HasEncoding">ns=1;i=5011</Reference>
+    </References>
+    <Definition Name="1:MeasurementRecord">
+      <Field Name="Source" DataType="String" />
+      <Field Name="Value" DataType="ns=1;i=3001" />
+      <Field Name="RecordedAt" DataType="DateTime" />
+    </Definition>
+  </UADataType>
+
+  <UAObject NodeId="ns=1;i=5011" BrowseName="Default Binary" SymbolicName="DefaultBinary">
+    <DisplayName>Default Binary</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">DataTypeEncodingType</Reference>
+      <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=2010</Reference>
+    </References>
+  </UAObject>
+
+  <!-- TaskInfo: structure with enum (Int32) and option set (UInt32) fields -->
+  <UADataType NodeId="ns=1;i=2011" BrowseName="1:TaskInfo">
+    <DisplayName>TaskInfo</DisplayName>
+    <Description>Task metadata with priority and access flags</Description>
+    <References>
+      <Reference ReferenceType="HasSubtype" IsForward="false">Structure</Reference>
+      <Reference ReferenceType="HasEncoding">ns=1;i=5012</Reference>
+    </References>
+    <Definition Name="1:TaskInfo">
+      <Field Name="Name" DataType="String" />
+      <Field Name="Priority" DataType="ns=1;i=1001" />
+      <Field Name="AccessLevel" DataType="ns=1;i=1010" />
+      <Field Name="Description" DataType="LocalizedText" />
+    </Definition>
+  </UADataType>
+
+  <UAObject NodeId="ns=1;i=5012" BrowseName="Default Binary" SymbolicName="DefaultBinary">
+    <DisplayName>Default Binary</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">DataTypeEncodingType</Reference>
+      <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=2011</Reference>
+    </References>
+  </UAObject>
+
+  <!-- ====================================================================== -->
+  <!-- CAPSTONE: FullReport — exercises every dynamic type component          -->
+  <!-- ====================================================================== -->
+
+  <UADataType NodeId="ns=1;i=2020" BrowseName="1:FullReport">
+    <DisplayName>FullReport</DisplayName>
+    <Description>Comprehensive type that nests all other test types</Description>
+    <References>
+      <Reference ReferenceType="HasSubtype" IsForward="false">Structure</Reference>
+      <Reference ReferenceType="HasEncoding">ns=1;i=5013</Reference>
+    </References>
+    <Definition Name="1:FullReport">
+      <!-- Plain built-in fields -->
+      <Field Name="Title" DataType="String" />
+      <Field Name="ReadingCount" DataType="UInt64" />
+
+      <!-- 3-level nesting: FullReport -> SensorLocation -> GeoCoordinate -->
+      <Field Name="Location" DataType="ns=1;i=2003" />
+
+      <!-- Contains union: MeasurementRecord -> Measurement -->
+      <Field Name="LatestRecord" DataType="ns=1;i=2010" />
+
+      <!-- Contains optional fields + optional nested SensorLocation -->
+      <Field Name="Alert" DataType="ns=1;i=2005" />
+
+      <!-- Enum field (encoded as Int32 on wire) -->
+      <Field Name="Priority" DataType="ns=1;i=1001" />
+
+      <!-- UInteger-based OptionSet field (encoded as UInt32 on wire) -->
+      <Field Name="AccessLevel" DataType="ns=1;i=1010" />
+
+      <!-- Structure-based OptionSet field (encoded inline as Value+ValidBits) -->
+      <Field Name="Interfaces" DataType="ns=1;i=1020" />
+
+      <!-- Nested structure with arrays of custom types -->
+      <Field Name="SensorData" DataType="ns=1;i=2006" />
+
+      <!-- Array field -->
+      <Field Name="Tags" DataType="String" ValueRank="1" />
+    </Definition>
+  </UADataType>
+
+  <UAObject NodeId="ns=1;i=5013" BrowseName="Default Binary" SymbolicName="DefaultBinary">
+    <DisplayName>Default Binary</DisplayName>
+    <References>
+      <Reference ReferenceType="HasTypeDefinition">DataTypeEncodingType</Reference>
+      <Reference ReferenceType="HasEncoding" IsForward="false">ns=1;i=2020</Reference>
+    </References>
+  </UAObject>
+
+</UANodeSet>

@@ -1,0 +1,29 @@
+BSD Zero Clause License (0BSD)
+
+Copyright (c) 2026 Reduktive Limited
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+
+----
+
+This licence covers the example programs in this directory only, and not the
+code the SDK's type generator emits into it: anything under a `generated`
+directory is output of the SDK itself and stays under the Reduktive Source
+Available License, as its own file headers state. It exists so
+that you can lift code from an example into your own application and owe
+nothing for it: no attribution, no notice to retain, no obligation of any kind.
+That is what the examples are for.
+
+The SDK itself is not covered by this licence. It is source-available under the
+Reduktive Source Available License in the LICENSE file at the root of this
+repository, which does not permit modification or derivative works. If you need
+a change to the SDK, including a bug fix, contact Reduktive Limited.

@@ -1,0 +1,46 @@
+{
+  "name": "uasdk",
+  "version-string": "1.0.0-rc.1",
+  "description": "Modern C++ OPC UA SDK (client + server)",
+  "license": "LicenseRef-Reduktive-Source-Available-1.0",
+  "homepage": "https://github.com/reduktive/opc-ua-sdk",
+  "supports": "!uwp",
+  "dependencies": [
+    "boost-asio",
+    "boost-container-hash",
+    "boost-endian",
+    "boost-flyweight",
+    "boost-json",
+    "boost-range",
+    "boost-uuid",
+    "fmt",
+    "openssl",
+    {
+      "name": "vcpkg-cmake",
+      "host": true
+    },
+    {
+      "name": "vcpkg-cmake-config",
+      "host": true
+    }
+  ],
+  "default-features": [],
+  "features": {
+    "history": {
+      "description": "Historical Access engine \u2014 implement HistoryStore for your own backend (no SQLite)"
+    },
+    "sqlite-store": {
+      "description": "Bundled SQLite-backed historical store (uasdk::history-sqlite)",
+      "dependencies": [
+        "sqlite3",
+        {
+          "name": "uasdk",
+          "default-features": false,
+          "features": [
+            "history"
+          ]
+        }
+      ]
+    }
+  }
+}

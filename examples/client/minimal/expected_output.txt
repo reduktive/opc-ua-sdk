@@ -1,0 +1,11 @@
+=== client/minimal ===
+Connect securely, read a value, write it, and close.
+
+  1. Opened the development PKI
+  2. Connected to opc.tcp://127.0.0.1:<port>
+  3. Resolved Demo/Setpoint by namespace URI and BrowseName
+  4. Read Setpoint = 25
+  5. Wrote Setpoint, read it back = 42.5
+  6. Closed the Session and stopped the client
+
+OK  client/minimal

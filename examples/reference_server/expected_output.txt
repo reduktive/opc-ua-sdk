@@ -1,0 +1,15 @@
+=== reference_server ===
+A production-shaped OPC UA server application.
+
+  1. Opened the persistent PKI
+     Server certificate SHA-256: <fingerprint>
+  2. Created the server
+  3. Imported the model from Reduktive.ReferenceServer.NodeSet2.xml
+  4. Listening, one Basic256Sha256 SignAndEncrypt endpoint
+     opc.tcp://127.0.0.1:<port>
+     Demo namespace: urn:reduktive:reference-server:demo
+     Nodes: UptimeSeconds, Setpoint, and Divide(numerator, divisor)
+     Press Ctrl+C to stop.
+  5. Stopped on Ctrl+C
+
+OK  reference_server

@@ -1,0 +1,60 @@
+# SPDX-License-Identifier: LicenseRef-Reduktive-Source-Available-1.0
+# Copyright (c) 2026 Reduktive Limited. All rights reserved.
+
+target_sources(uasdk-server PRIVATE
+        ua_attribute_service_set.h
+        ua_browse_service.h
+        ua_diagnostic_collector.cpp
+        ua_history_event_validation.h
+        ua_history_read_service.h
+        ua_history_read_validation.h
+        ua_history_update_service.h
+        ua_method_argument_validation.h
+        ua_method_service_set.h
+        ua_read_service.h
+        ua_register_nodes_service.h
+        ua_session_registered_nodes.h
+        ua_service.h
+        ua_service_base.h
+        ua_service_request_info.h
+        ua_string_lexical_validation.h
+        ua_service_base.cpp
+        ua_string_lexical_validation.cpp
+        ua_string_table_builder.cpp
+        ua_translate_browse_paths_service.h
+        ua_attribute_service_set.cpp
+        ua_data_access_projection.h
+        ua_data_access_projection.cpp
+        ua_information_model_pairs.h
+        ua_information_model_pairs.cpp
+        ua_register_nodes_service.cpp
+        ua_session_registered_nodes.cpp
+        ua_history_delegate.cpp
+        ua_history_event_validation.cpp
+        ua_history_read_service.cpp
+        ua_history_read_validation.cpp
+        ua_history_update_service.cpp
+        ua_browse_service.cpp
+        ua_paused_operation.h
+        ua_paused_operation.cpp
+        ua_continuation_points.cpp
+        ua_discovery_service_set.cpp
+        ua_method_argument_validation.cpp
+        ua_method_service_set.cpp
+        ua_translate_browse_paths_service.cpp
+        ua_discovery_service_set.h
+        ua_node_management_service.h
+        ua_node_management_service.cpp
+        ua_namespace_delegates.cpp
+        ua_option_set_merge.h
+        ua_option_set_merge.cpp
+        ua_write_type_facts.h
+        ua_write_type_facts.cpp
+        ua_allow_nulls_batch.h
+        ua_allow_nulls_batch.cpp
+        ua_registered_server_store.h
+        ua_registered_server_store.cpp
+)
+
+uasdk_private_include_directory(uasdk-server)
+add_subdirectory(aggregates)

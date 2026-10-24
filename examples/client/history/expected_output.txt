@@ -1,0 +1,16 @@
+=== client/history ===
+Read a Variable's past, and add to it.
+
+  1. Connected to opc.tcp://127.0.0.1:<port> and resolved Temperature
+  2. Server keeps history for this node: yes
+  3. HistoryRead Raw returned 5 samples
+     2026-01-01T09:00  20
+     2026-01-01T09:05  20.5
+     2026-01-01T09:10  21
+     2026-01-01T09:15  21.5
+     2026-01-01T09:20  22
+  4. Inserted one sample, server answered GoodEntryInserted (0x00A20000)
+  5. HistoryRead Raw now returns 6 samples
+  6. Closed the Session and stopped the client
+
+OK  client/history
