@@ -150,9 +150,15 @@ void decode_unknowns_in_place(Variant& value, const StructureResolver& resolver,
     return std::move(result.value());
   };
 
+  // An ExtensionObject with no body decodes to an empty RefStructure, which has nothing to reify.
   if (value.is_structure())
   {
-    if (auto reified = reifyIfOpaque(value.as<Structure>()))
+    auto& reference = value.as<RefStructure<Structure>>();
+    if (!reference)
+    {
+      return;
+    }
+    if (auto reified = reifyIfOpaque(*reference))
     {
       value = std::move(reified);
     }
@@ -162,6 +168,10 @@ void decode_unknowns_in_place(Variant& value, const StructureResolver& resolver,
     auto& array = value.as<Array<RefStructure<Structure>>>();
     for (auto& reference : array.payload())
     {
+      if (!reference)
+      {
+        continue;
+      }
       if (auto reified = reifyIfOpaque(*reference))
       {
         reference = std::move(reified);

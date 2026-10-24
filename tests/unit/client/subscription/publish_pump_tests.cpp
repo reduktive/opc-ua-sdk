@@ -179,4 +179,47 @@ TEST(PublishPump, ResumeRestartsAStoppedPump)
   EXPECT_EQ(host.issued, 4) << "resume from Idle clears the stale count and refills";
 }
 
+// The pipeline stops the pump when the link drops and, with no Subscription to resume for, leaves it
+// stopped; the next CreateSubscription starts it. The Publishes counted before the stop went out on the
+// dropped channel, so `start` from Idle must not count them.
+TEST(PublishPump, StartAfterStopDoesNotCountTheStoppedPublishes)
+{
+  CountingHost host;
+  PublishPump pump{host};
+  pump.start();
+  pump.stop();
+  ASSERT_EQ(pump.outstanding(), 2u);
+
+  pump.start();
+  EXPECT_EQ(pump.state(), PumpState::Running);
+  EXPECT_EQ(pump.outstanding(), 2u);
+  EXPECT_EQ(host.issued, 4) << "start from Idle fills to target on the new channel";
+}
+
+// Every CreateSubscription calls `start`, so a second start while Running keeps the Publishes it has.
+TEST(PublishPump, StartWhileRunningIssuesNothingMore)
+{
+  CountingHost host;
+  PublishPump pump{host};
+  pump.start();
+  pump.start();
+  EXPECT_EQ(pump.outstanding(), 2u);
+  EXPECT_EQ(host.issued, 2) << "the Publishes already outstanding are still answered";
+}
+
+// A start while Paused keeps the count: those Publishes are queued at the server and will be answered.
+TEST(PublishPump, StartWhilePausedKeepsTheOutstandingCount)
+{
+  CountingHost host;
+  PublishPump pump{host};
+  pump.start();
+  pump.on_publish_response(/*tooMany=*/true);  // Paused, 1 outstanding
+  ASSERT_EQ(pump.state(), PumpState::Paused);
+  ASSERT_EQ(pump.outstanding(), 1u);
+
+  pump.start();
+  EXPECT_EQ(pump.outstanding(), 2u);
+  EXPECT_EQ(host.issued, 3) << "only the shortfall to target is issued";
+}
+
 }  // namespace

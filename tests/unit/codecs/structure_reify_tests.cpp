@@ -211,6 +211,67 @@ TEST(StructureReifyTest, ReifyInPlaceArray)
   }
 }
 
+// A Variant decoded from the wire, with no resolver, as the client decodes a server's response.
+Variant decode_wire_variant(const std::vector<byte>& bytes)
+{
+  memory_stream_device::Dynamic device;
+  MemoryStream stream{device};
+  stream.write_all(bytes);
+  stream.seek_from_start(0);
+  UaBinaryDecoder decoder{StructureResolver{}, stream, make_limits()};
+  Variant value;
+  decoder.decode(make_limit(), value);
+  return value;
+}
+
+// An ExtensionObject with encoding byte 0 has no body, and the decoder leaves its element empty. A server
+// can send an array of them; reifying such an array dereferenced the empty element and aborted the client.
+TEST(StructureReifyTest, ReifyInPlaceSkipsEmptyElementsOfADecodedArray)
+{
+  // Variant: ExtensionObject array (0x16 | 0x80) of 2, each NodeId ns=0;i=0 (0x00 0x00) with no body (0x00).
+  auto value = decode_wire_variant({byte{0x96}, byte{0x02}, byte{0x00}, byte{0x00}, byte{0x00}, byte{0x00},
+    byte{0x00}, byte{0x00}, byte{0x00}, byte{0x00}, byte{0x00}});
+  ASSERT_TRUE(value.is_array_of_structure());
+  ASSERT_EQ(value.as<Array<RefStructure<Structure>>>().payload().size(), 2u);
+  ASSERT_FALSE(value.as<Array<RefStructure<Structure>>>().payload()[1]);
+
+  decode_unknowns_in_place(value, argument_resolver(NodeId{Argument::defaultBinaryEncodingId}), make_limits());
+
+  for (const auto& reference : value.as<Array<RefStructure<Structure>>>().payload())
+  {
+    EXPECT_FALSE(reference) << "an element with no body stays empty";
+  }
+}
+
+// The same for a single ExtensionObject with no body.
+TEST(StructureReifyTest, ReifyInPlaceSkipsADecodedScalarWithNoBody)
+{
+  auto value = decode_wire_variant({byte{0x16}, byte{0x00}, byte{0x00}, byte{0x00}});
+  ASSERT_TRUE(value.is_structure());
+  ASSERT_FALSE(value.as<RefStructure<Structure>>());
+
+  decode_unknowns_in_place(value, argument_resolver(NodeId{Argument::defaultBinaryEncodingId}), make_limits());
+
+  EXPECT_FALSE(value.as<RefStructure<Structure>>()) << "an ExtensionObject with no body stays empty";
+}
+
+// Empty elements are skipped, and the opaque elements around them are still reified.
+TEST(StructureReifyTest, ReifyInPlaceReifiesTheElementsAroundAnEmptyOne)
+{
+  Array<RefStructure<Structure>> array;
+  array.payload().emplace_back(make_binary_opaque(sample_argument()));
+  array.payload().emplace_back();
+  Variant value{std::move(array)};
+
+  decode_unknowns_in_place(value, argument_resolver(NodeId{Argument::defaultBinaryEncodingId}), make_limits());
+
+  const auto& reified = value.as<Array<RefStructure<Structure>>>().payload();
+  ASSERT_EQ(reified.size(), 2u);
+  ASSERT_TRUE(reified[0]);
+  EXPECT_NE(dynamic_cast<const Argument*>(&(*reified[0])), nullptr);
+  EXPECT_FALSE(reified[1]);
+}
+
 // decode_unknowns_in_place is a no-op (and idempotent) when the resolver cannot resolve the type.
 TEST(StructureReifyTest, ReifyInPlaceNoOpWhenUnresolved)
 {

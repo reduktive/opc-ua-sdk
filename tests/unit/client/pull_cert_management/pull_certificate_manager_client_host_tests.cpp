@@ -28,6 +28,8 @@
 #include "test_key_cache.h"
 
 #include "ua_application_configuration.h"
+#include "ua_browse_path_result.h"
+#include "ua_browse_path_target.h"
 #include "ua_certificate_store.h"
 #include "ua_client.h"
 #include "ua_core_client_impl.h"
@@ -37,6 +39,8 @@
 #include "ua_connection_handle_factory.h"
 #include "ua_connection_impl.h"
 #include "ua_to_string.h"
+#include "ua_translate_browse_paths_to_node_ids_response.h"
+#include "ua_translated_node_id.h"
 #include "ua_connection_impl_test_access.h"
 #include "ua_crypto.h"
 #include "ua_date_time.h"
@@ -824,6 +828,65 @@ TEST_F(PullCertClientHostTest, GetCertificateStatusWithoutGdsNamespaceIsSourceTa
   EXPECT_EQ(result.status_code().as_status(), Status::BadNodeIdUnknown);
   ASSERT_NE(result.shared_detail(), nullptr);
   EXPECT_EQ(result.shared_detail()->source, "client.tier1.pull_cert.get_certificate_status");
+}
+
+// A String Directory id is the case a moved-from NodeId loses: the Method lookup must start at the
+// Directory the server returned, and the Call must target it, whichever order the compiler builds the
+// lookup's arguments in.
+// @relation(AC-CL-PULLCRT-007-A-CERTIFICATE-IS-REQUESTED-ONLY-WHEN-THE-GDS-SAYS-AN-UPDATE-IS-REQUIRED, scope=function)
+TEST_F(PullCertClientHostTest, GetCertificateStatusCallsTheMethodOnAStringDirectoryId)
+{
+  constexpr std::uint16_t gdsNamespace = 2;
+  const ua::NodeId directoryId{gdsNamespace, ua::String{"Directory"}};
+  const ua::NodeId methodId{gdsNamespace, ua::String{"Directory.GetCertificateStatus"}};
+  auto session = std::make_shared<FakeSessionOps>();
+  session->translateBrowsePaths.set_result_fn(
+    [directoryId, methodId](const ua::TranslateBrowsePathsToNodeIdsRequest& request)
+      -> ua::Result<ua::TranslateBrowsePathsToNodeIdsResponse>
+    {
+      ua::TranslateBrowsePathsToNodeIdsResponse response;
+      for (const auto& path : request.browse_paths())
+      {
+        ua::BrowsePathResult result;
+        ua::BrowsePathTarget target;
+        target.target_id() = ua::ExpandedNodeId{
+          path.starting_node() == ua::NodeId{ua::ObjectId::ObjectsFolder} ? directoryId : methodId};
+        target.remaining_path_index() = ua::client::TranslatedNodeId::fullyResolved;
+        result.targets().push_back(std::move(target));
+        response.results().push_back(std::move(result));
+      }
+      return ua::Result<ua::TranslateBrowsePathsToNodeIdsResponse>{std::move(response)};
+    });
+  session->read.set_result(ua::Result<ua::ReadResponse>{ua::test_helpers::make_namespace_array_response(
+    {"http://opcfoundation.org/UA/", "urn:test:connection", "http://opcfoundation.org/UA/GDS/"})});
+  auto reopen = std::make_shared<FakeReopen>();
+  auto connectionImpl = make_connection(session, reopen);
+  const auto started = await<VoidResult>(
+    [&](std::function<void(VoidResult)> cb) { connectionImpl->start_async(std::move(cb)); });
+  ASSERT_TRUE(started.is_good());
+  auto connection =
+    std::make_shared<ua::client::Connection>(ConnectionHandleFactory::make_connection(connectionImpl));
+
+  auto host = make_host();
+  host->set_gds_connection_for_test(connection);
+
+  (void)await<ua::Result<bool>>(
+    [&](std::function<void(ua::Result<bool>)> cb)
+    {
+      host->get_certificate_status_async(
+        ua::NodeId{2, 7U}, ua::NodeId{ua::ObjectId::Server}, ua::NodeId{}, std::move(cb));
+    });
+
+  const auto translates = session->translateBrowsePaths.requests();
+  ASSERT_EQ(translates.size(), 2U);
+  ASSERT_EQ(translates[1].browse_paths().size(), 1U);
+  EXPECT_EQ(translates[1].browse_paths()[0].starting_node(), directoryId)
+    << "the Method lookup must start at the Directory the first lookup returned";
+  const auto calls = session->call.requests();
+  ASSERT_EQ(calls.size(), 1U);
+  ASSERT_EQ(calls[0].methods_to_call().size(), 1U);
+  EXPECT_EQ(calls[0].methods_to_call()[0].object_id(), directoryId);
+  EXPECT_EQ(calls[0].methods_to_call()[0].method_id(), methodId);
 }
 
 // ============================================================================

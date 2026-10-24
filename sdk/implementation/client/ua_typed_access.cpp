@@ -2571,10 +2571,12 @@ void TypedAccess::call_method_async(ua::NodeId object, ua::NodeId method, std::v
 
   auto impl = mImpl;
   TypedAccess inspector{impl};
+  // `method` is copied into the continuation, not moved: the first argument reads it, and the order in
+  // which a call's arguments are built is unspecified.
   inspector.inspect_method_inputs_async(method,
     [impl,
       object = std::move(object),
-      method = std::move(method),
+      method,
       arguments = std::move(arguments),
       callback = std::move(callback)](ua::Result<MethodInputMetadata> metadata) mutable
     {

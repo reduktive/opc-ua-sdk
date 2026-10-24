@@ -13,6 +13,13 @@ PublishPump::PublishPump(PublishPumpHost& host) noexcept : mHost(host)
 
 void PublishPump::start()
 {
+  // Starting a stopped pump discards its count, as resume() does: the pipeline stops the pump when the
+  // channel drops or closes, and the Publishes sent on that channel are never answered. A Paused or
+  // Running pump's Publishes are queued at the server and are still counted.
+  if (mState == PumpState::Idle)
+  {
+    mOutstanding = 0;
+  }
   mState = PumpState::Running;
   fill();
 }

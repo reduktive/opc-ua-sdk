@@ -1519,6 +1519,34 @@ TEST(SubscriptionsPipeline, ResumeIsNoOpWithoutSubscriptions)
   EXPECT_EQ(pipeline->info()->pumpState, PumpState::Idle);
 }
 
+// The last Subscription is deleted while its Publishes are outstanding, the link drops before the server
+// answers them, and the Connection resumes with no Subscriptions. Those Publishes died with the dropped
+// channel, so a Subscription created afterwards must still get a full pipeline of Publishes. Counting them
+// as outstanding left start() with nothing to send and the new Subscription silently delivered nothing.
+TEST(SubscriptionsPipeline, SubscriptionCreatedAfterAnEmptyResumeGetsPublishes)
+{
+  Fixture f;
+  auto pipeline = f.make();
+  pipeline->add_subscription_async(7, /*publishingInterval=*/500.0);
+  pipeline->start_async();
+  f.ctx.run();
+  f.ctx.restart();
+  ASSERT_EQ(f.host->publishes.size(), 2u);
+
+  pipeline->remove_subscription_async(7);  // the last Subscription; its two Publishes are unanswered
+  pipeline->stop_async();                  // the link dropped: the Connection entered Reconnecting
+  pipeline->resume_async();                // Active again, with no Subscriptions to resume
+  f.ctx.run();
+  f.ctx.restart();
+  ASSERT_EQ(f.host->publishes.size(), 2u) << "nothing to publish for while there are no Subscriptions";
+
+  pipeline->add_subscription_async(8, /*publishingInterval=*/500.0);  // CreateSubscription on the new channel
+  pipeline->start_async();
+  f.ctx.run();
+  EXPECT_EQ(pipeline->info()->pumpState, PumpState::Running);
+  EXPECT_EQ(f.host->publishes.size(), 4u) << "the new Subscription gets a full pipeline on the new channel";
+}
+
 // ============================================================================================
 // Republish-on-reconnect recovery barrier - recover_subscriptions_async (section 6.7 / CL-RECONN-004)
 // ============================================================================================

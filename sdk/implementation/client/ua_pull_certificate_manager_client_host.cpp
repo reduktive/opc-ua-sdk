@@ -227,12 +227,12 @@ void call_certificate_directory_method_async(std::shared_ptr<ua::client::Connect
         return;
       }
       auto directoryId = std::move(directory).value();
+      // `directoryId` is copied into the continuation, not moved: the first argument reads it, and the
+      // order in which a call's arguments are built is unspecified.
       connection->typed().resolve_path_async(directoryId,
         make_certificate_directory_path(ua::ReferenceTypeId::HasComponent, namespaceIndex, methodName),
-        [connection,
-          directoryId = std::move(directoryId),
-          arguments = std::move(arguments),
-          callback = std::move(callback)](ua::NodeIdResult resolvedMethod) mutable
+        [connection, directoryId, arguments = std::move(arguments), callback = std::move(callback)](
+          ua::NodeIdResult resolvedMethod) mutable
         {
           auto method = require_local_certificate_directory_node(
             std::move(resolvedMethod), "PullCertMethodResolutionFailed");

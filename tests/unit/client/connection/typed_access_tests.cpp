@@ -615,6 +615,43 @@ TEST_F(TypedAccessTest, CallMethodStructuredInputMatchesDeclaredDataTypeThroughR
     << "structured Call preflight must inspect InputArguments and optional descriptions";
 }
 
+// A String Method id is the case a moved-from NodeId loses: the preflight must inspect the Method the
+// caller named, not an empty String id, whichever order the compiler builds the call's arguments in.
+// @verifies CL-METH-007
+// @relation(CL-METH-007, scope=function)
+TEST_F(TypedAccessTest, CallMethodStructuredInputInspectsAStringMethodId)
+{
+  script_single_method_input(ua::NodeId{ua::DataTypeId::Range});
+  ua::CallMethodResult methodResult;
+  methodResult.status_code() = ua::StatusCode{Status::Good};
+  mSession->call.set_result(Result<ua::CallResponse>{make_call_response(methodResult)});
+  const ua::NodeId object{2, ua::String{"StructEchoObject"}};
+  const ua::NodeId method{2, ua::String{"StructEchoMethod"}};
+
+  auto typed = make_typed_access();
+  auto result = await<ua::CallResult>([&](auto callback)
+    { typed.call_method_async(object, method, {ua::Variant{ua::Range{}}}, std::move(callback)); });
+
+  ASSERT_TRUE(result.is_good());
+  std::size_t inputArgumentBrowses = 0;
+  for (const auto& request : mSession->browse.requests())
+  {
+    if (request.nodes_to_browse()[0].reference_type_id() == ua::NodeId{ua::ReferenceTypeId::HasProperty})
+    {
+      ++inputArgumentBrowses;
+      EXPECT_EQ(request.nodes_to_browse()[0].node_id(), method)
+        << "the InputArguments preflight must browse the Method the caller named";
+    }
+  }
+  EXPECT_EQ(inputArgumentBrowses, 1U);
+  ASSERT_EQ(mSession->call.call_count(), 1U);
+  const auto calls = mSession->call.requests();
+  const auto& methodsToCall = calls.back().methods_to_call();
+  ASSERT_EQ(methodsToCall.size(), 1U);
+  EXPECT_EQ(methodsToCall[0].object_id(), object);
+  EXPECT_EQ(methodsToCall[0].method_id(), method);
+}
+
 // @verifies CL-METH-007
 // @relation(CL-METH-007, scope=function)
 TEST_F(TypedAccessTest, CallMethodStructuredSubtypeMatchesDeclaredSupertype)

@@ -94,14 +94,19 @@ class StartRef
 public:
   /// References @p start, which must outlive this object.
   ///
-  /// The address is stored without its const; @ref call casts it back to `Start*`, whose const is the
-  /// argument's own, so a const start function is only ever called as const.
+  /// The address is stored without its const; the private `call` casts it back to `Start*`, whose const is
+  /// the argument's own, so a const start function is only ever called as const.
+  ///
+  /// @tparam Start The start function's type, possibly const.
+  /// @param start  The start function @ref blocking_call calls with its completion.
   template<class Start>
   explicit StartRef(Start& start) noexcept
     : mObject(const_cast<void*>(static_cast<const void*>(std::addressof(start)))), mCall(&call<Start>)
   {}
 
   /// Calls the referenced start function with @p complete.
+  ///
+  /// @param complete The completion the start function takes ownership of.
   void operator()(std::function<void(ResultT)>&& complete) const
   {
     mCall(mObject, std::move(complete));
@@ -118,7 +123,13 @@ private:
   void (*mCall)(void*, std::function<void(ResultT)>&&);
 };
 
-/// The body of @ref blocking_call, which depends on the result type only.
+/// The body of `blocking_call`, which depends on the result type only.
+///
+/// @tparam ResultT The @ref ua::Result specialisation the operation completes with.
+/// @param executor As for `blocking_call`.
+/// @param start    The start function, referenced through `StartRef`.
+/// @param deadline As for `blocking_call`.
+/// @return As for `blocking_call`.
 template<class ResultT>
 [[nodiscard]] ResultT blocking_call_body(const boost::asio::any_io_executor& executor, StartRef<ResultT> start,
   std::optional<std::chrono::milliseconds> deadline) noexcept

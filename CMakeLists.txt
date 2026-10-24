@@ -8,7 +8,7 @@ project(SDK VERSION 1.0.0)
 # Full version of the deliberately approved release. CMake's project(VERSION)
 # accepts only the numeric core, while public tags and package metadata retain
 # the SemVer prerelease component.
-set(UASDK_RELEASE_VERSION "1.0.0-rc.1")
+set(UASDK_RELEASE_VERSION "1.0.0-rc.2")
 
 # Expose our own helpers (UAGenerateTypes etc.) on CMAKE_MODULE_PATH so
 # downstream consumers that `add_subdirectory(sdk)` can simply

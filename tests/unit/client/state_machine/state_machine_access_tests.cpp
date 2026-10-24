@@ -674,6 +674,110 @@ TEST(ClientStateMachineCurrentStateIs, IdentityMetadataReadFailurePreservesError
   EXPECT_EQ(captured->shared_detail()->cause->cause->code, "InjectedIdentityMetadataFailure");
 }
 
+// @verifies CL-SM-006
+// String state ids are the case a moved-from NodeId loses: each owner lookup must browse the State the
+// identity names, whichever order the compiler builds the Browse call's arguments in.
+// @relation(CL-SM-006, scope=function)
+TEST(ClientStateMachineCurrentStateIs, StringStateIdsLookUpTheOwnerOfTheStateTheyName)
+{
+  Fixture f;
+  StateMachineHandleResult handle = f.build_base(node(224));
+  ASSERT_TRUE(handle.is_good());
+
+  const ua::NodeId originStateId{2, ua::String{"OriginMachineType.Running"}};
+  const ua::NodeId subtypeStateId{2, ua::String{"SubtypeMachineType.Running"}};
+  ua::ReferenceDescription originReplica = child_ref("Running", 0);
+  originReplica.node_id() = ua::ExpandedNodeId{originStateId};
+  f.push_read({dv_nodeid(originStateId)});  // CurrentState.Id
+
+  f.push_read({dv_qualified_name(ua::QualifiedName{0, "Running"})});
+  f.push_browse({child_ref("OriginMachineType", 2240)});
+  f.push_browse({});
+
+  f.push_read({dv_qualified_name(ua::QualifiedName{0, "Running"})});
+  f.push_browse({child_ref("SubtypeMachineType", 2241)});
+  f.push_browse({child_ref("OriginMachineType", 2240)});
+  f.push_browse({originReplica});
+  f.push_browse({});
+
+  std::optional<ua::Result<bool>> captured;
+  handle.value().current_state_is_async(
+    subtypeStateId, [&captured](ua::Result<bool> result) { captured = std::move(result); });
+  f.run();
+
+  ASSERT_TRUE(captured.has_value());
+  ASSERT_TRUE(captured->is_good());
+  EXPECT_TRUE(captured->value());
+  ASSERT_EQ(f.wireOps->browseRequests.size(), 8U);
+  EXPECT_EQ(f.wireOps->browseRequests[2].nodes_to_browse()[0].node_id(), originStateId);
+  EXPECT_EQ(f.wireOps->browseRequests[4].nodes_to_browse()[0].node_id(), subtypeStateId);
+}
+
+// @verifies CL-SM-006
+// @verifies CL-DIAG-003
+// A failed owner lookup keeps the current_state_is source on its ErrorDetail, whichever order the compiler
+// builds the Browse call's arguments in.
+// @relation(CL-DIAG-003, CL-SM-006, scope=function)
+TEST(ClientStateMachineCurrentStateIs, OwnerLookupFailureKeepsTheCurrentStateIsSource)
+{
+  Fixture f;
+  StateMachineHandleResult handle = f.build_base(node(225));
+  ASSERT_TRUE(handle.is_good());
+
+  f.push_read({dv_nodeid(node(2250))});
+  f.push_read({dv_qualified_name(ua::QualifiedName{0, "Running"})});
+  FakeWireOps::BrowsePage refused;
+  refused.status = ua::StatusCode{ua::Status::BadNodeIdUnknown};
+  f.wireOps->browsePages.push_back(std::move(refused));
+
+  std::optional<ua::Result<bool>> captured;
+  handle.value().current_state_is_async(
+    node(2251), [&captured](ua::Result<bool> result) { captured = std::move(result); });
+  f.run();
+
+  ASSERT_TRUE(captured.has_value());
+  ASSERT_TRUE(captured->is_bad());
+  EXPECT_EQ(captured->status_code().as_status(), ua::Status::BadNodeIdUnknown);
+  ASSERT_NE(captured->shared_detail(), nullptr);
+  EXPECT_EQ(captured->shared_detail()->code, "StateMachineCurrentIdentityResolveFailed");
+  ASSERT_NE(captured->shared_detail()->cause, nullptr);
+  EXPECT_EQ(captured->shared_detail()->cause->code, "StateMachineBrowseBad");
+  EXPECT_EQ(captured->shared_detail()->cause->source, "client.tier2.state_machine.current_state_is");
+}
+
+// @verifies CL-SM-006
+// @verifies CL-DIAG-003
+// A failed supertype lookup while walking the owner's ObjectType hierarchy keeps the current_state_is source
+// on its ErrorDetail, whichever order the compiler builds the Browse call's arguments in.
+// @relation(CL-DIAG-003, CL-SM-006, scope=function)
+TEST(ClientStateMachineCurrentStateIs, SupertypeLookupFailureKeepsTheCurrentStateIsSource)
+{
+  Fixture f;
+  StateMachineHandleResult handle = f.build_base(node(226));
+  ASSERT_TRUE(handle.is_good());
+
+  f.push_read({dv_nodeid(node(2260))});
+  f.push_read({dv_qualified_name(ua::QualifiedName{0, "Running"})});
+  f.push_browse({child_ref("OwnerMachineType", 2270)});  // inverse HasComponent owner
+  FakeWireOps::BrowsePage refused;
+  refused.status = ua::StatusCode{ua::Status::BadNodeIdUnknown};
+  f.wireOps->browsePages.push_back(std::move(refused));  // inverse HasSubtype of the owner type
+
+  std::optional<ua::Result<bool>> captured;
+  handle.value().current_state_is_async(
+    node(2261), [&captured](ua::Result<bool> result) { captured = std::move(result); });
+  f.run();
+
+  ASSERT_TRUE(captured.has_value());
+  ASSERT_TRUE(captured->is_bad());
+  EXPECT_EQ(captured->status_code().as_status(), ua::Status::BadNodeIdUnknown);
+  ASSERT_NE(captured->shared_detail(), nullptr);
+  EXPECT_EQ(captured->shared_detail()->code, "StateMachineCurrentIdentityResolveFailed");
+  ASSERT_NE(captured->shared_detail()->cause, nullptr);
+  EXPECT_EQ(captured->shared_detail()->cause->code, "StateMachineBrowseBad");
+  EXPECT_EQ(captured->shared_detail()->cause->source, "client.tier2.state_machine.current_state_is");
+}
+
 // @verifies CL-SM-003
 // @relation(CL-SM-003, scope=function)
 TEST(ClientStateMachineCurrentStateIs, EmptyCurrentStateIdValueMeansNotActiveGoodFalse)

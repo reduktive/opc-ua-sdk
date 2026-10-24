@@ -25,11 +25,17 @@ namespace ua::history
 /// returned between two pages skips one row not yet returned.
 struct HistoryWindowWalk
 {
+  /// Earliest time not yet returned; unset when the window has no lower bound.
   std::optional<ua::DateTime> lower;
+  /// Whether a row at exactly @ref lower is still to be returned.
   bool lowerInclusive{true};
+  /// Latest time not yet returned; unset when the window has no upper bound.
   std::optional<ua::DateTime> upper;
+  /// Whether a row at exactly @ref upper is still to be returned.
   bool upperInclusive{false};
+  /// The walk's direction: `After` pages upwards from @ref lower, `Before` downwards from @ref upper.
   Direction order{Direction::After};
+  /// How many rows at the bound the next page starts from were already returned, and are skipped.
   uint32_t returnedAtNearEdge{0};
 };
 

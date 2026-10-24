@@ -14,13 +14,17 @@ robust asynchronous operation. OPC UA PubSub support is planned for Q1 CY2027.
 [Documentation and API reference](https://www.reduktive.com/opcua/sdk/docs) ·
 [License](LICENSE) · [Security](SECURITY.md)
 
-> **Current release: `v1.0.0-rc.1`**
+> **Current release: `v1.0.0-rc.2`**
 >
 > This is prerelease software made available for evaluation. APIs and
 > capabilities may change, and the SDK is not represented as production-ready
 > or certified for industrial use. Reduktive does not issue commercial
 > production licences for prerelease versions. Prerelease ends with the stable
 > `v1.0.0` release in Q4 CY2026.
+>
+> Building the SDK currently takes a long time and a lot of compiler memory;
+> reducing both is the first work item after this release candidate. See
+> [Build and install the SDK](#build-and-install-the-sdk).
 
 > **This repository is a mirror. Development is not undertaken here.**
 >
@@ -78,19 +82,51 @@ for the current release. The prerelease makes no certification claim.
 
 ## Quality
 
-A full configured SDK build registers more than 8,000 unit tests and more than
-3,000 integration tests, backed by more than 58,500 source-level `ASSERT_*` and
-`EXPECT_*` statements. The suite ships with the source, so those figures can be
+A full configured SDK build registers more than 16,000 unit tests and more than
+6,000 integration tests, counting each instance of a parameterised test and the
+tests of the generated code, backed by more than 77,000 source-level `ASSERT_*`
+and `EXPECT_*` statements. The suite ships with the source, so those figures can be
 reproduced rather than taken on trust — see [Run the test
 suite](#run-the-test-suite). The unit suite covers types and codecs, state transitions,
 concurrency and lifetime rules, failure paths, and preservation of `StatusCode`
 and `ErrorDetail`. End-to-end integration tests exercise service behaviour,
 session lifecycles, and complete client/server exchanges over real TCP
-connections. Qualification includes GCC, Clang, and MSVC builds in 32-bit and
-64-bit configurations; AddressSanitizer, ThreadSanitizer,
-UndefinedBehaviorSanitizer, coverage measurement, and independent static-analysis
-gates. Coverage-guided fuzzing, soak and load testing, and failure injection
-provide additional scrutiny of malformed input and long-running behaviour.
+connections. Every integration test runs this SDK against itself; evidence
+against other stacks comes from the interoperability runs below.
+
+Reduktive's continuous integration, which is not part of this repository, also
+runs: both suites on Linux with GCC and Clang, and on 32-bit Linux; the unit and
+integration suites on Windows with MSVC 19.44, which is below the supported floor
+of 19.50 (see [Requirements](#requirements)); AddressSanitizer with
+UndefinedBehaviorSanitizer, and ThreadSanitizer; coverage measurement;
+static-analysis gates; coverage-guided libFuzzer runs of the binary decoder;
+soak, leak and failure-injection runs. The libFuzzer drivers and their corpus are
+not shipped. The `tooling/fuzzer` program that is shipped is a mutation fuzzer
+driven by a fixed seed, not a coverage-guided one.
+
+### Interoperability and conformance
+
+The figures below are indicative results from the most recent runs. They are
+not reproducible from this repository, which ships neither the interoperability
+harness nor the OPC Foundation test tooling, and they are not OPC Foundation
+certification.
+
+- **Interoperability.** An automated harness runs the SDK as client and as
+  server against open62541, the OPC Foundation .NET Standard stack, Eclipse Milo,
+  asyncua and node-opcua on Linux. The latest complete run (12 October 2026)
+  passed all 286 protocol cases, including valid and rejected username
+  identities under seven security policies (three RSA, four NIST and Brainpool
+  ECC) against the .NET stack. Earlier complete runs also covered
+  subscriptions, method calls, built-in datatypes and certificate rejection.
+  Later runs that add automatic security-token renewal and session lifecycles
+  recorded 312 passes with 2 failures and 369 passes with 1 failure; the
+  failures concern messages after a token renewal and are open. Interoperability
+  on Windows is not yet qualified.
+- **Conformance.** The OPC Foundation Compliance Test Tool (CTT 1.05), run
+  against the SDK's compliance test server on 1 October 2026, executed 1,618
+  cases: 1,096 passed, 11 failed, 492 reported a feature the test server does
+  not implement, and 19 were skipped. The 11 failures were traced to defects in
+  the CTT's own scripts.
 
 ## Getting started
 
@@ -185,10 +221,12 @@ The generated OPC UA types and Namespace 0 sources are committed, so this build 
 Python, no type generator, and no network access. It produces static libraries by default;
 set `UASDK_BUILD_SHARED=ON` for a shared-library build on Linux.
 
-**What to expect.** Around six minutes at `-j6` on a developer machine, and an install tree
-of roughly **340 MB** — five static libraries and 857 headers. Static libraries are large
+**What to expect.** About 50 CPU-minutes of compilation: 9 minutes at `-j6` on an AMD Ryzen 9
+3900 with GCC 14, and an install tree of roughly **350 MB** — five static libraries and 838
+headers. Static libraries are large
 because every function is emitted into its own section so your linker can discard the ones
-you never call; a program that uses a little of the SDK links a little of it.
+you never call; a program that uses a little of the SDK links a little of it, provided its
+link discards unused sections — see [Link only what you use](#link-only-what-you-use).
 
 **Memory.** Allow about 3 GB per parallel compile job for a Release build and about 5 GB for
 Debug or RelWithDebInfo; the heaviest translation unit measured peaks at 2.8 GB and 4.7 GB
@@ -286,7 +324,7 @@ Then depend on it from your application's `conanfile.txt`:
 
 ```ini
 [requires]
-reduktive-opcua-sdk/1.0.0-rc.1
+reduktive-opcua-sdk/1.0.0-rc.2
 
 [generators]
 CMakeDeps
@@ -427,6 +465,18 @@ run `ctest` in the build directory.
 
 ### Link only what you use
 
+**Pass `-Wl,--gc-sections` to your application's link** when you use GCC or Clang
+with an installed package:
+
+```cmake
+target_link_options(my_opcua_app PRIVATE -Wl,--gc-sections)
+```
+
+The SDK's own build passes it, but an installed package does not add link
+options to its consumers' links, and without it the linker keeps every function
+of each object file it pulls in. An independent review measured the minimal
+program above at 8.4 MB without the option and 132 KB with it.
+
 `uasdk::uasdk` is the simplest default, and it is not the wasteful one: these are
 static libraries, so the linker takes only the objects your program actually refers to
 and an unused role library contributes nothing. Naming `uasdk::core` instead of
@@ -538,17 +588,95 @@ write with read-back, a data-change Subscription, successful and failed Method c
 The pair is deliberately compact. History, Alarms and Events, File Transfer, GDS, and PubSub will be
 covered by focused examples rather than obscuring the core client/server usage pattern.
 
+## Known defects and limitations
+
+This is a release candidate. An independent review of `v1.0.0-rc.1` reported
+most of the defects below. The first three are fixed in this release; the rest
+are known and open, and fixes are planned before `v1.0.0`.
+
+**Fixed in `v1.0.0-rc.2`:**
+
+- A server could abort a client with an array of ExtensionObjects in which an
+  element has no body: the client dereferenced the empty element when it
+  decoded the array's structures.
+- After a reconnect with no Subscriptions, a Subscription created later received
+  no Publish requests and delivered no data, while the connection still looked
+  healthy.
+- A client could move a String or Opaque NodeId into a continuation before the
+  same call read it, so the call used an empty NodeId (GCC evaluates the
+  arguments right to left).
+
+**Security and resource use:**
+
+- Before a secure channel is open, a server decodes the first message as any
+  type it names, up to the negotiated maximum message size (16 MiB by default).
+  The decoded form can occupy much more memory than the bytes received, so an
+  unauthenticated peer can make a server allocate far more than it sent. Until
+  this is fixed, turn off `discoveryEndpointEnabled` if you do not need the
+  unsecured discovery endpoint, lower `connectionProtocolLimits.maxMessageSize`,
+  and limit the process's memory with the operating system.
+- A message that is part-way through reassembly on an open channel has no
+  timeout between chunks.
+- Channel admissions that overlap in time can exceed the configured maximum
+  number of secure channels. The maximum number of connections still bounds
+  open sockets.
+- A HistoryRead continuation does not re-check field permissions; fields are
+  authorised once per request.
+- AccessRestrictions are not enforced on subscriptions.
+- Expanding XML entities takes time quadratic in the length of a value with
+  many unrecognised `&` characters.
+
+**Lifetime and shutdown:**
+
+- Shutting down a client or server explicitly and then calling
+  `Runtime::shutdown()` makes the Runtime report `BadInternalError`, because the
+  second shutdown answers `BadInvalidState`.
+- Some shutdown and lifetime paths can lose callbacks or hang: a user close that
+  overlaps a client shutdown; requests queued during a reconnect when the
+  Connection handle is destroyed; `Runtime::shutdown()` called from one of the
+  Runtime's own threads; and `*_sync` calls on an attached handle after
+  `Runtime::shutdown()`.
+- With the default reconnect policy, which retries forever, a `*_sync` call made
+  during an outage blocks until the connection returns. There is no per-call
+  deadline or local cancellation.
+
+**Conformance (OPC 10000-4):**
+
+- After a Good NaN sample, a scalar deadband suppresses every later value.
+- ModifyMonitoredItems cannot modify Event monitored items, and ignores
+  `timestampsToReturn`.
+- Concurrent requests on one Subscription can answer `Bad_InvalidState`.
+- HistoryRead does not check the requested data encoding.
+- On the client, `Subscription::monitor_event_async` answers `BadNotSupported`.
+
+**API and packaging:**
+
+- `Result` and most `try_*_sync` functions are not `[[nodiscard]]`, so an
+  ignored result compiles without a warning.
+- The CMake package reports version `1.0.0` for this release candidate, because
+  CMake package versions cannot carry a prerelease suffix.
+- Development-only tests are left out of `ctest` only with CMake 3.22 or later.
+- MSVC 19.50, the supported floor, has not yet been exercised in a release
+  check; see [Requirements](#requirements).
+- Some API reference comments, mostly in the client headers, are placeholders, and
+  some refer to design documents and requirement identifiers that are not published;
+  see [Status and roadmap](#status-and-roadmap).
+
 ## Status and roadmap
 
-The initial public release is `v1.0.0-rc.1`. Further release candidates will be
+The current release is `v1.0.0-rc.2`. Further release candidates will be
 published only when needed, followed by the stable `v1.0.0` release in Q4
 CY2026.
 
 During the release-candidate phase, work focuses first on reducing compile time and
-compiler memory (see [Build and install the SDK](#build-and-install-the-sdk)), then on API
-refinement, release qualification, examples, and the expanded documentation described above. OPC UA PubSub support
-is planned for Q1 CY2027 as the first major post-`1.0.0` addition. Current
-product status and roadmap information are published on the
+compiler memory (see [Build and install the SDK](#build-and-install-the-sdk)) and on
+the [known defects](#known-defects-and-limitations), then on API refinement, release
+qualification, examples, and the expanded documentation described above. After
+`v1.0.0-rc.2`, the API reference comments in the client headers that only restate a
+function's name are replaced with each function's actual contract, and references to
+unpublished design documents and requirement identifiers are removed from the public
+headers. OPC UA PubSub support is planned for Q1 CY2027 as the first major post-`1.0.0`
+addition. Current product status and roadmap information are published on the
 [SDK website](https://www.reduktive.com/opcua/sdk).
 
 ## Source available — not open source

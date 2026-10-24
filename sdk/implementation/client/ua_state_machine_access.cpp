@@ -245,7 +245,9 @@ void drain_children(std::shared_ptr<ua::client::detail::WireOps> lockedWireOps,
 
 /// Browses @p nodeId one level along @p referenceType and accumulates EVERY child reference across all
 /// continuation pages. Delivers the full reference list (or a Bad Result chaining the wire detail under
-/// @p source). @p interface is held strong for the whole page walk.
+/// @p source). @p interface is held strong for the whole page walk. A caller copies, not moves, into
+/// @p done any value it also passes as an argument: the order in which a call's arguments are built is
+/// unspecified.
 void browse_references(std::shared_ptr<ua::client::detail::WireOps> lockedWireOps, ua::NodeId nodeId,
   ua::ReferenceTypeId referenceType, ua::BrowseDirection direction, std::string source,
   std::function<void(ua::Result<ReferenceList>)> done)
@@ -428,7 +430,7 @@ void walk_state_identity_to_origin(std::shared_ptr<ua::client::detail::WireOps> 
       browseName = std::move(browseName),
       visitedOwners = std::move(visitedOwners),
       depth,
-      source = std::move(source),
+      source,
       done = std::move(done)](ua::Result<ReferenceList> parents) mutable
     {
       if (!parents.is_good())
@@ -455,7 +457,7 @@ void walk_state_identity_to_origin(std::shared_ptr<ua::client::detail::WireOps> 
           browseName = std::move(browseName),
           visitedOwners = std::move(visitedOwners),
           depth,
-          source = std::move(source),
+          source,
           done = std::move(done)](ua::Result<ReferenceList> parentComponents) mutable
         {
           if (!parentComponents.is_good())
@@ -582,9 +584,9 @@ void normalize_state_identity(std::shared_ptr<ua::client::detail::WireOps> locke
         ua::BrowseDirection::Inverse,
         source,
         [wireOpsForWalk = std::move(wireOpsForWalk),
-          identity = std::move(identity),
+          identity,
           browseName = std::move(browseName),
-          source = std::move(source),
+          source,
           done = std::move(done)](ua::Result<ReferenceList> owners) mutable
         {
           if (!owners.is_good())

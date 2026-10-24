@@ -321,7 +321,7 @@ struct PropertyReadNames
 /// @param holdsExpectedType The @ref Variant test for a @p T, such as `&Variant::is_boolean`.
 /// @param names             The names the ErrorDetails carry.
 /// @param onComplete        Receives the value with the code of the lookup and the read combined by
-///                          @ref ua::detail::combined_status; that code alone when it is Bad, or when it is
+///                          `ua::detail::combined_status`; that code alone when it is Bad, or when it is
 ///                          not Good and there is no value; `Bad_TypeMismatch` when the value is not a @p T;
 ///                          or the failure of the lookup or the read. Never throws.
 template<typename T>
@@ -329,6 +329,8 @@ void read_property_value_async(AddressSpace addressSpace, NodeId parent, Qualifi
   bool (Variant::*holdsExpectedType)() const, PropertyReadNames names,
   std::function<void(Result<T>)> onComplete) noexcept;
 
+/// @cond
+// One explicit instantiation per value type the generator maps a DataType to, documented at the template.
 extern template void read_property_value_async<bool>(AddressSpace, NodeId, QualifiedName,
   bool (Variant::*)() const, PropertyReadNames, std::function<void(Result<bool>)>) noexcept;
 extern template void read_property_value_async<uint8_t>(AddressSpace, NodeId, QualifiedName,
@@ -367,6 +369,7 @@ extern template void read_property_value_async<QualifiedName>(AddressSpace, Node
   bool (Variant::*)() const, PropertyReadNames, std::function<void(Result<QualifiedName>)>) noexcept;
 extern template void read_property_value_async<LocalizedText>(AddressSpace, NodeId, QualifiedName,
   bool (Variant::*)() const, PropertyReadNames, std::function<void(Result<LocalizedText>)>) noexcept;
+/// @endcond
 
 /// Writes @p value to the Property @p browseName of @p parent.
 ///
@@ -402,8 +405,13 @@ void find_child_for_accessor_async(AddressSpace addressSpace, NodeId parent, Nod
 /// Finds the child @p browseName of @p parent and attaches a @p Handle to it.
 ///
 /// @tparam Handle The child's generated handle class, or @ref Property.
-/// @param onComplete Receives what `Handle::attach_async` answers, or the failure of
-///                   @ref find_child_for_accessor_async. Never throws.
+/// @param addressSpace Address space that owns @p parent.
+/// @param parent       The instance whose child is attached.
+/// @param refType      The reference type from @p parent to the child.
+/// @param browseName   The child's BrowseName.
+/// @param owner        The handle class: the source of an `AddressSpaceGone` detail.
+/// @param onComplete   Receives what `Handle::attach_async` answers, or the failure of
+///                     @ref find_child_for_accessor_async. Never throws.
 template<typename Handle>
 void attach_child_async(AddressSpace addressSpace, NodeId parent, NodeId refType, QualifiedName browseName,
   const char* owner, std::function<void(Result<Handle>)> onComplete) noexcept

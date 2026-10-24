@@ -25,7 +25,7 @@ from conan.tools.files import rmdir
 
 class ReduktiveOpcUaSdkConan(ConanFile):
     name = "reduktive-opcua-sdk"
-    version = "1.0.0-rc.1"
+    version = "1.0.0-rc.2"
     license = "LicenseRef-Reduktive-Source-Available-1.0"  # see LICENSE
     description = "Modern C++ OPC UA SDK (client + server)"
     homepage = "https://github.com/reduktive/opc-ua-sdk"
